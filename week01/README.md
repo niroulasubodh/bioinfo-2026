@@ -1,3 +1,3 @@
-Applied Bioinformatics Week1 Assignment
+## Tools Used For Analysis 
 
-Hello World!!
+**samtools:** Version 1.24
