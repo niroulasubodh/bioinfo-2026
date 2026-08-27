@@ -53,8 +53,8 @@ ls bioinfo_2026/week01/data/scripts/
 week01/<br>
 └── README.md<br>
 └── data<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── sample.csv
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── sample.csv <br>
 └── scripts<br>
-&nbsp;&nbsp;&nbsp;└── anaysis.R
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── anaysis.R
 
 3 directories, 3 files
