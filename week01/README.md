@@ -1,1 +1,3 @@
-Hello Worldgit add week01/README.md 
+<Applied Bioinformatics Week1 Assignment>
+
+Hello World!!
