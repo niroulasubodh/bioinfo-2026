@@ -1,3 +1,3 @@
-<Applied Bioinformatics Week1 Assignment>
+Applied Bioinformatics Week1 Assignment
 
 Hello World!!
