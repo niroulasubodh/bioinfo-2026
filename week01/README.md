@@ -43,7 +43,7 @@ week01/<br>
 touch week01/data/sample.csv
 
 #Create 'analysis.R' file inside the scripts folder 
-touch week01/data/scripts/anaysis.R
+touch week01/data/scripts/analysis.R
 
 #View the created files
 ls bioinfo_2026/week01/data/
@@ -55,6 +55,20 @@ week01/<br>
 └── data<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── sample.csv <br>
 └── scripts<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── anaysis.R
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── analysis.R
 
 3 directories, 3 files
+
+#### Show how to access these files using relative and absolute paths.
+
+```
+#Relative paths when your current directory is 'week01'
+cat README.md 
+cat data/sample.csv
+cat scripts/analysis.R
+
+#Absolute paths
+cat /Users/subodhniroula/bioinfo-2026/week01/README.md 
+cat /Users/subodhniroula/bioinfo-2026/week01/data/sample.csv
+cat /Users/subodhniroula/bioinfo-2026/week01/scripts/analysis.R
+```
