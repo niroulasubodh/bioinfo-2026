@@ -1,5 +1,6 @@
 ## Basic Bioinformatics Commands
 
+**Editor:** VSCode
 
 #### What version is your *samtools* command in the *bioinfo* environment?
 
@@ -22,32 +23,38 @@ Version: 1.24 (using htslib 1.24)
 
 ```
 # Make nested directory
-mkdir -p bioinfo_2026/week01/data/scripts
+mkdir -p bioinfo_2026/week01/scripts | mkdir -p bioinfo_2026/week01/data
 
 #View them in a tree
 tree bioinfo_2026
 ```
 **Output** <br>
-bioinfo_2026/<br>
-└── week01<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── data<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── scripts<br>
+week01/<br>
+└── README.md<br>
+└── data<br>
+└── scripts<br>
 
-4 directories, 0 files
+3 directories, 1 files
 
 #### Show commands that create files in different directories
 
 ```
 ##Create 'sample.csv' file inside the data folder 
-touch bioinfo_2026/week01/data/sample.csv
+touch week01/data/sample.csv
 
 #Create 'analysis.R' file inside the scripts folder 
-touch bioinfo_2026/week01/data/scripts/anaysis.R
+touch week01/data/scripts/anaysis.R
 
 #View the created files
 ls bioinfo_2026/week01/data/
 ls bioinfo_2026/week01/data/scripts/
 ```
 **Output** <br>
-sample.csv scripts  <br>
-analysis.R
+week01/<br>
+└── README.md<br>
+└── data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── sample.csv
+└── scripts<br>
+&nbsp;&nbsp;&nbsp;└── anaysis.R
+
+3 directories, 3 files
