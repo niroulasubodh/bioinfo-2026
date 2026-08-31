@@ -61,7 +61,7 @@ week01/<br>
 
 #### Show how to access these files using relative and absolute paths.
 
-```s
+```
 #Relative paths when your current directory is 'week01'
 cat README.md 
 cat data/sample.csv
