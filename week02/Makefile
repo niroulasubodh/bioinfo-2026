@@ -9,7 +9,6 @@ GFF_DIR := $(DATASETS_DIR)/gff
 SAMTOOLS ?= samtools
 BGZIP ?= bgzip
 TABIX ?= tabix
-IGV_APP ?= /Applications/IGV_2.16.0.app
 
 FASTA_SUFFIXES := \
 	cds_from_genomic.fna.gz \
@@ -26,7 +25,7 @@ GFF_FILE := $(GFF_DIR)/$(LOCAL_PREFIX)_genomic.gff
 GFF_BGZIP := $(GFF_FILE).gz
 GFF_INDEX := $(GFF_BGZIP).tbi
 
-.PHONY: all download fasta gff index igv check-samtools check-bgzip check-tabix
+.PHONY: all download fasta gff index check-samtools check-bgzip check-tabix
 
 all: index
 
@@ -44,7 +43,7 @@ $(FASTA_DIR)/$(LOCAL_PREFIX)_%:
 	curl --fail --location --retry 3 --output "$@.tmp" "$(BASE_URL)/$(REMOTE_PREFIX)_$*"
 	mv "$@.tmp" "$@"
 
-# IGV uses the genomic nucleotide FASTA as its reference genome.
+# Decompress the genomic nucleotide FASTA.
 $(REFERENCE_FASTA): $(REFERENCE_GZ)
 	gzip -dc "$<" > "$@.tmp"
 	mv "$@.tmp" "$@"
@@ -66,11 +65,6 @@ $(GFF_BGZIP): $(GFF_FILE) | check-bgzip
 
 $(GFF_INDEX): $(GFF_BGZIP) | check-tabix
 	$(TABIX) --force --preset gff "$<"
-
-# Build both indexes, then launch IGV with the reference and GFF track.
-igv: index
-	test -d "$(IGV_APP)" || { echo "IGV was not found at $(IGV_APP)" >&2; exit 1; }
-	open -n "$(IGV_APP)" --args --genome "$(abspath $(REFERENCE_FASTA))" "$(abspath $(GFF_BGZIP))"
 
 check-samtools:
 	@command -v "$(SAMTOOLS)" >/dev/null || { echo "Missing samtools. Activate bioinfo or install it with: brew install samtools" >&2; exit 1; }
