@@ -16,7 +16,7 @@ This project visualizes genomic data from *Orthohantavirus andesense* using IGV(
 
 ## Visualizations
 
-* Run the Makefile to download and unzip the necessary FASTA and GFF for genomic visualization ```make``.
+* Run the Makefile to download and unzip the necessary FASTA and GFF for genomic visualization ```make```.
 * Check comments in Makefile for necessary packages.  
 * Locate the files in the directory ```datasets > fasta, gff```.
 * Open files in IGV and load FASTA (```Genomes > Load Genomes from File```) and GFF (```File > Load from File```) to visualize. 
@@ -24,15 +24,18 @@ This project visualizes genomic data from *Orthohantavirus andesense* using IGV(
 ## Observations
 The genome of *Orthohantavirus andesense* is annotated seperately for different segments.
 
-* ![**Large Segment**](images/large.png)
+* **Large Segment**
+![](images/large.png)
 
-* ![**Medium Segment**](images/medium.png)
+* **Medium Segment**
+![](images/medium.png)
 
-* ![**Small Segment**](images/small.png)
+* **Small Segment**
+![](images/small.png)
 
 * In this genome, the genes are not "packed" in the traditional sense with measurable gene-to-gene gaps.
-* Each of the three segments (L, M, and S, corresponding to NC_003468.2, NC_003467.2, and NC_003466.1) carries essentially a single gene that spans nearly the entire length of the segment, with only short untranslated regions at the ends. 
-* Picking a coordinate such as NC_003468.2:3,281 on the L segment, IGV's sequence track shows the surrounding bases along with their translations. At that position, the three forward reading frames are displayed as three stacked rows of amino acids, while the three reverse frames would appear analogously if the view were flipped to the minus strand
+* The L and M segments (NC_003468.2 and NC_003467.2) each carry a single gene spanning nearly their entire length, while the S segment (NC_003466.1) carries two overlapping genes.
+* Picking a coordinate such as NC_003468.2:3,281 on the L segment, IGV's sequence track shows the surrounding bases along with their translations. At that position, the three forward reading frames are displayed as three stacked rows of amino acids. 
 * The gene is annotated on the plus strand, so only the forward frames are biologically relevant. 
 * The data track beneath the sequence is a gene annotation track loaded from the GFF file, where each blue arrow-marked block represents one annotated gene feature. 
 
