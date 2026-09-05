@@ -35,7 +35,7 @@ The different segments of *Orthohantavirus andesense* genome are shown below.
 
 * In this genome, the genes are not "packed" in the traditional sense with measurable gene-to-gene gaps.
 * The L and M segments (NC_003468.2 and NC_003467.2) each carry a single gene spanning nearly their entire length, while the S segment (NC_003466.1) carries two overlapping genes.
-* Picking a coordinate such as NC_003468.2:3,281 on the L segment, IGV's sequence track shows the surrounding bases along with their translations. At that position, the three forward reading frames are displayed as three stacked rows of amino acids. 
+* Picking a coordinate such as NC_003468.2:3,141-3,421 on the L segment, IGV's sequence track shows the surrounding bases along with their translations. At that position, the three forward reading frames are displayed as three stacked rows of amino acids. 
 * The gene is annotated on the plus strand, so only the forward frames are biologically relevant. 
 * The data track beneath the sequence is a gene annotation track loaded from the GFF file, where each blue arrow-marked block represents one annotated gene feature. 
 
