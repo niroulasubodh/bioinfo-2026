@@ -12,8 +12,8 @@ This project visualizes genomic data from *Orthohantavirus andesense* using IGV(
 * **Genome Size:** 12.1 kb
 * **[Number of Annotiations](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/850/405/GCF_000850405.1_ViralMultiSegProj14746/GCF_000850405.1_ViralMultiSegProj14746_feature_count.txt):** 8
 * **Assembly Level:** Complete 
-* Contains segmented viral genome made entirely of ribonucleic acid (RNA).
 * **Significance:** Andes virus is the primary causative agent of Hantavirus Cardiopulmonary Syndrome (HCPS) and is uniquely notable among hantaviruses for documented person-to-person transmission.
+* Contains segmented viral genome made entirely of ribonucleic acid (RNA).
 
 ## Visualizations
 
@@ -24,17 +24,11 @@ This project visualizes genomic data from *Orthohantavirus andesense* using IGV(
 ## Observations
 The genome of *Orthohantavirus andesense* is annotated seperately for different segments.
 
-* **Large Segment**
+* ![**Large Segment**](images/large.png)
 
-![IGV view of L segment](images/large.png)
+* ![**Medium Segment**](images/medium.png)
 
-* **Medium Segment**
-
-![IGV view of M segment](images/medium.png)
-
-* **Small Segment**
-
-![IGV view of S segment](images/small.png)
+* ![**Small Segment**](images/small.png)
 
 * In this genome, the genes are not "packed" in the traditional sense with measurable gene-to-gene gaps.
 * Each of the three segments (L, M, and S, corresponding to NC_003468.2, NC_003467.2, and NC_003466.1) carries essentially a single gene that spans nearly the entire length of the segment, with only short untranslated regions at the ends. 
