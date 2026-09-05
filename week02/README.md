@@ -10,15 +10,15 @@ This project visualizes genomic data from *Orthohantavirus andesense* using IGV(
 * **General:** Contains segmented viral genome made entirely of ribonucleic acid (RNA).
 * **Accession:** [NC_003467](https://www.ncbi.nlm.nih.gov/nuccore/NC_003467.2_)
 * **Genome Size:** 12.1 kb
-* **[Number of Annotiations](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/850/405/GCF_000850405.1_ViralMultiSegProj14746/GCF_000850405.1_ViralMultiSegProj14746_feature_count.txt):** 8
+* **[Number of Annotiations](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/850/405/GCF_000850405.1_ViralMultiSegProj14746/GCF_000850405.1_ViralMultiSegProj14746_feature_count.txt):** 4
 * **Assembly Level:** Complete 
 * **Significance:** Andes virus is the primary causative agent of Hantavirus Cardiopulmonary Syndrome (HCPS) and is uniquely notable among hantaviruses for documented person-to-person transmission.
 
-
 ## Visualizations
 
-* Run the make file to download and unzip the necessary FASTA and GFF for genomic visualization.
-* Locate the files in the directory ```datasets > fasta, gff```
+* Run the Makefile to download and unzip the necessary FASTA and GFF for genomic visualization ```make``.
+* Check comments in Makefile for necessary packages.  
+* Locate the files in the directory ```datasets > fasta, gff```.
 * Open files in IGV and load FASTA (```Genomes > Load Genomes from File```) and GFF (```File > Load from File```) to visualize. 
 
 ## Observations
