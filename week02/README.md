@@ -22,7 +22,7 @@ This project visualizes genomic data from *Orthohantavirus andesense* using IGV(
 * Open files in IGV and load FASTA (```Genomes > Load Genomes from File```) and GFF (```File > Load from File```) to visualize. 
 
 ## Observations
-The genome of *Orthohantavirus andesense* is annotated seperately for different segments.
+The different segments of *Orthohantavirus andesense* genome are shown below.
 
 * **Large Segment**
 ![](images/large.png)
