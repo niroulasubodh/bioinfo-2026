@@ -30,11 +30,11 @@ The genome of *Orthohantavirus andesense* is annotated seperately for different 
 
 * **Medium Segment**
 
-![IGV view of M segment](medium.png)
+![IGV view of M segment](images/medium.png)
 
 * **Small Segment**
 
-![IGV view of S segment](small.png)
+![IGV view of S segment](images/small.png)
 
 * In this genome, the genes are not "packed" in the traditional sense with measurable gene-to-gene gaps.
 * Each of the three segments (L, M, and S, corresponding to NC_003468.2, NC_003467.2, and NC_003466.1) carries essentially a single gene that spans nearly the entire length of the segment, with only short untranslated regions at the ends. 
