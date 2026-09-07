@@ -16,10 +16,10 @@ This project visualizes genomic data from *Orthohantavirus andesense* using IGV(
 
 ## Visualizations
 
-* Run the Makefile to download and unzip the necessary FASTA and GFF for genomic visualization ```make```.
+* Run the Makefile to download and unzip the necessary FASTA and GFF files for genomic visualization ```make```.
 * Check comments in Makefile for necessary packages.  
 * Locate the files in the directory ```datasets > fasta, gff```.
-* Open files in IGV and load FASTA (```Genomes > Load Genomes from File```) and GFF (```File > Load from File```) to visualize. 
+* Open files in IGV and load FASTA (```Genomes > Load Genomes from File```) and GFF (```File > Load from File```) files to visualize. 
 
 ## Observations
 The different segments of *Orthohantavirus andesense* genome are shown below.
