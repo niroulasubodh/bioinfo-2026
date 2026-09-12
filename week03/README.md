@@ -35,7 +35,7 @@ Overall, Kny-Le’s submission better fulfills all assignment questions, althoug
 
 ## Changes
 
-**```README``` Changes**
+**```README``` Changes**\
 First, I added comments to the ```Makefile``` to make clear that it also renames files and generates indices. I then updated the ```README``` to include the corrected Makefile code, since the version originally shown in the ```README``` didn't match the actual ```Makefile``` being used. I replaced it with the up-to-date version along with its actual output, and removed the now-obsolete "rename files" and "make indices" instructions from the ```README```, since those steps are now handled automatically by ```Makefile```. 
 
 [**Click Here to View the Pull Request**](https://github.com/Kny-Le/BMMB852_KL/pull/1)
