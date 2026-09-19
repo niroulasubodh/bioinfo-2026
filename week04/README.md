@@ -6,7 +6,7 @@
 
 **About the Dataset:** There are 49 sequencing datasets available in the published scientific literature. These datasets were generated using two platforms: Oxford Nanopore and Illumina. Most of the sequences were generated using Illumina, possibly because this organism has a relatively short genome.
 
-## Download and check a read subset
+## Download FASTQ Files, Run Quality Test, Trim Adaptor and Low Quality Reads
 
 Install SRA Toolkit (`fastq-dump`), FastQC (`fastqc`), and fastp (`fastp`), then run:
 
