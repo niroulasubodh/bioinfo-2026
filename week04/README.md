@@ -1,4 +1,4 @@
-# Get FASTQ Files from SRA
+# Get FASTQ Files from SRA and Quality Control Test
 
 **Organisms:** *Orthohantavirus andesense*
 
