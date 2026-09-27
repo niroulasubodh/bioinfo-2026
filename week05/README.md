@@ -54,11 +54,15 @@ Set these variables at the top of the `Makefile`, or override them on the comman
 
 ### How read count is estimated
 
-Once the genome is downloaded, its size (bp) is calculated automatically. The number of read **pairs** needed to reach the target coverage is:
+Once the genome is downloaded, its size in base pairs (bp) is calculated automatically. The number of read **pairs** needed to reach the target coverage is:
 
-$$\text{reads} = \frac{\text{genome size} \times \text{COVERAGE}}{2 \times \text{READ\_LEN}}$$
+$$
+\text{read pairs} =
+\frac{\text{genome size} \times \text{COVERAGE}}
+{2 \times \text{READ\_LEN}}
+$$
 
-You can bypass this and force an exact number of reads with:
+You can override this calculation and request an exact number of read pairs:
 
 ```bash
 make fastq NUM_READS=5000
@@ -66,22 +70,26 @@ make fastq NUM_READS=5000
 
 ### Determining `READ_LEN` from your own data
 
-`READ_LEN` should reflect the **actual average length** of your Illumina reads, not just a generic assumption. The most reliable way to get this is from a FastQC report on your FASTQ files:
+`READ_LEN` should reflect the **actual average length** of your Illumina reads. You can estimate it from a FastQC report:
 
-$$\text{READ\_LEN} = \frac{\text{Total Bases}}{\text{Total Sequences}}$$
+$$
+\text{READ\_LEN} =
+\frac{\text{Total Bases}}{\text{Total Sequences}}
+$$
 
-For example, a FastQC report showing `Total Sequences = 10000` and `Total Bases = 1.9 Mbp` gives:
+For example, if the report shows `Total Sequences = 10,000` and `Total Bases = 1.9 Mbp`:
 
-$$\text{READ\_LEN} = \frac{1{,}900{,}000}{10{,}000} = 190 \text{ bp}$$
+$$
+\text{READ\_LEN} =
+\frac{1{,}900{,}000}{10{,}000}
+= 190\ \text{bp}
+$$
 
-An inaccurate `READ_LEN` won't break the pipeline — it will just cause the actual achieved coverage to be somewhat higher or lower than your `COVERAGE` target.
-
-You can pass it directly at runtime instead of editing the default:
+An inaccurate `READ_LEN` will affect the coverage achieved, but it will not stop the pipeline. You can set it at runtime:
 
 ```bash
 make fastq READ_LEN=190
 ```
-
 ### Automatic re-download when coverage/read-length settings change
 
 `COVERAGE`, `READ_LEN`, and `NUM_READS` are plain Make variables, not files — by default, Make has no way to know they changed between runs, since it only tracks file timestamps. To work around this, the `fastq` target depends on a `check-config` step that runs on every invocation:
