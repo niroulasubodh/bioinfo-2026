@@ -3,7 +3,7 @@ SHELL := /bin/bash
 
 # Choose the SRA run and how many of its first spots to download.
 # Override either value, for example: make all SRR=SRR123456 N=10000
-SRR ?= SRR38840885
+SRR ?= SRR34582745
 N ?= 10000
 
 # Keep each run and subset size in its own raw-data, trimmed-data, and report folders.

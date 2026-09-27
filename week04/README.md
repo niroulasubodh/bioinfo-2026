@@ -4,7 +4,7 @@
 
  **Genome Accession:** [NC_003467](https://www.ncbi.nlm.nih.gov/nuccore/NC_003467.2_)
  
-**SRR Accession:** [SRR38840885](https://www.ncbi.nlm.nih.gov/sra/SRX33807787[accn])
+**SRR Accession:** [SRR34582745](https://www.ncbi.nlm.nih.gov/sra/SRX29724100[accn])
 
 **About the Dataset:** There are 49 sequencing datasets available in the published scientific literature. These datasets were generated using two platforms: Oxford Nanopore and Illumina. Most of the sequences were generated using Illumina, possibly because this organism has a relatively short genome.
 
