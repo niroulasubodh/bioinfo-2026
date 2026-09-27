@@ -1,0 +1,10 @@
+PASS	Basic Statistics	sample_single.fastq
+PASS	Per base sequence quality	sample_single.fastq
+PASS	Per sequence quality scores	sample_single.fastq
+FAIL	Per base sequence content	sample_single.fastq
+FAIL	Per sequence GC content	sample_single.fastq
+PASS	Per base N content	sample_single.fastq
+WARN	Sequence Length Distribution	sample_single.fastq
+FAIL	Sequence Duplication Levels	sample_single.fastq
+FAIL	Overrepresented sequences	sample_single.fastq
+PASS	Adapter Content	sample_single.fastq
