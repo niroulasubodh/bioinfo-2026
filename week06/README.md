@@ -29,7 +29,7 @@ Sample 1 was displayed as paired reads and colored by insert size. Most pairs ar
 ![](igv/sample_1.png)
 
 ### 2. Sample 2 
-Sample 2 was displayed as paired reads and colored by read strand. The pink and purple read colors distinguishes two different read strand. Numerous colored bases within the reads represent mismatches to the reference. These mismatches may reflect single-nucleotide variants in the sample sequence, sequencing errors, or alignment artifacts. **A mismatch consistently supported by multiple high-quality reads is more convincing evidence of a true variant than an isolated mismatch.** 
+Sample 2 was displayed as paired reads and colored by read strand. The pink and purple read colors distinguishes two different read strand. Numerous colored bases within the reads represent mismatches to the reference. These mismatches may reflect **single-nucleotide variants in the sample sequence, sequencing errors, or alignment artifacts.** 
 
 ![](igv/sample_2.png)
 
