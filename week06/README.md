@@ -44,8 +44,8 @@ Sample 4 was colored by pair orientation. Clusters of turquoise reads point in t
 ![](igv/sample_4.png)
 
 ## 5. Sample 5 
-Sample 5 was displayed as paired reads and colored by insert size and pair orientation. The green pairs are outward-facing and span a much larger reference distance than the gray pairs. This indicates **inversion and deletion in sample genome.** 
+Sample 5 was displayed as paired reads and colored by insert size and pair orientation. The green pairs are outward-facing and span a much larger reference distance than the gray pairs. This indicates **inversion in sample genome.** 
 
-The red pairs remain inward-facing but also span a much larger reference distance than the gray pairs. This pattern is consistent with a **possible deletion, fragments spanning a region absent from the sample align farther apart on the reference.**
+The red pairs remain inward-facing but also span a much larger reference distance than the gray pairs. This pattern is consistent with a **possible translocation.**
 
 ![](igv/sample_5.png)
