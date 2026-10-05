@@ -34,7 +34,7 @@ Sample 2 was displayed as paired reads and colored by read strand. The pink and 
 ![](igv/sample_2.png)
 
 ### 3. Sample 3 
-Sample 3 was displayed as paired reads and colored by insert size and pair orientation. Several green pairs have an outward-facing orientation, unlike the usual inward-facing orientation of standard paired-end reads. This indicates **inversion.**
+Sample 3 was displayed as paired reads and colored by insert size and pair orientation. Several green pairs have an outward-facing orientation, unlike the usual inward-facing orientation of standard paired-end reads. This indicates **copy number variation.**
 
 ![](igv/sample_3.png)
 
