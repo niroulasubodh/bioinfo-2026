@@ -1,0 +1,10 @@
+# Install with: conda env create --prefix ./.bioinfo-env --file environment.yml
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - sra-tools
+  - bwa
+  - samtools
+  - bcftools
