@@ -93,8 +93,8 @@ SN      0       number of multiallelic SNP sites:       0
 The majority of calls (QUAL ≥ 225) appear to be true variants, supported by very high quality scores and a Ts/Tv ratio of 9.92. A small subset of 20-25 variants (QUAL < 110, some with depth as low as 2-5x) are lower-confidence calls that could represent sequencing errors. 
 
 **Representative High Quality Variant**
-![**Representative High Quality Variant**](IGV/variant_highquality.png)
+![](IGV/variant_highquality.png)
 
 **Representative Low Quality Variant**
-![Representative Low Quality Variant](IGV/variant_lowquality.png)
+![](IGV/variant_lowquality.png)
 
