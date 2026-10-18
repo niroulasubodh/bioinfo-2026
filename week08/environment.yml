@@ -1,0 +1,11 @@
+name: bioinfo-env
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - sra-tools
+  - bwa
+  - samtools
+  - bcftools
+  - curl
+  - gzip

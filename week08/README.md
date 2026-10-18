@@ -1,4 +1,4 @@
-# Multi-sample VCF and Variant Effect Prediction — Influenza A (A/WSN/1933 H1N1)
+# Multi-sample VCF and Variant Effect Prediction — Influenza A 
 
 ## 1. Overview
 

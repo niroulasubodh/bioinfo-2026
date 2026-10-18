@@ -1,0 +1,66 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##bcftoolsVersion=1.24+htslib-1.24
+##bcftoolsCommand=mpileup -Ou -f genome/InfluenzaA_genome.fna -a FORMAT/DP,FORMAT/AD align/InfluenzaA_Sample1.bam
+##reference=file://genome/InfluenzaA_genome.fna
+##contig=<ID=CY034139.1,length=2290>
+##contig=<ID=CY034138.1,length=2303>
+##contig=<ID=CY034137.1,length=2202>
+##contig=<ID=CY034132.1,length=1725>
+##contig=<ID=CY034135.1,length=1526>
+##contig=<ID=CY034134.1,length=1368>
+##contig=<ID=CY034133.1,length=984>
+##contig=<ID=CY034136.1,length=845>
+##ALT=<ID=*,Description="Represents allele(s) other than observed.">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=IDV,Number=1,Type=Integer,Description="Maximum number of raw reads supporting an indel">
+##INFO=<ID=IMF,Number=1,Type=Float,Description="Maximum fraction of raw reads supporting an indel">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw read depth">
+##INFO=<ID=VDB,Number=1,Type=Float,Description="Variant Distance Bias for filtering splice-site artefacts in RNA-seq data (bigger is better)",Version="3">
+##INFO=<ID=RPBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Read Position Bias (closer to 0 is better)">
+##INFO=<ID=MQBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Mapping Quality Bias (closer to 0 is better)">
+##INFO=<ID=BQBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Base Quality Bias (closer to 0 is better)">
+##INFO=<ID=MQSBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Mapping Quality vs Strand Bias (closer to 0 is better)">
+##INFO=<ID=SCBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Soft-Clip Length Bias (closer to 0 is better)">
+##INFO=<ID=SGB,Number=1,Type=Float,Description="Segregation based metric, http://samtools.github.io/bcftools/rd-SegBias.pdf">
+##INFO=<ID=MQ0F,Number=1,Type=Float,Description="Fraction of MQ0 reads (smaller is better)">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Number of high-quality bases">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths (high-quality bases)">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Average mapping quality">
+##bcftools_callVersion=1.24+htslib-1.24
+##bcftools_callCommand=call -mv --ploidy 1 -Oz -o variants/InfluenzaA_Sample1.vcf.gz; Date=Sat Oct 17 21:57:36 2026
+##bcftools_mergeVersion=1.24+htslib-1.24
+##bcftools_mergeCommand=merge --write-index -O z -o variants/merged.vcf.gz variants/InfluenzaA_Sample1.vcf.gz variants/InfluenzaA_Sample2.vcf.gz variants/InfluenzaA_Sample3.vcf.gz; Date=Sat Oct 17 22:17:28 2026
+##bcftools/csqVersion=1.24+htslib-1.24
+##bcftools/csqCommand=csq -f genome/InfluenzaA_genome.fna -g genome/InfluenzaA_genomic.gff -p a -O z -o variants/merged.annotated.vcf.gz variants/merged.vcf.gz; Date=Sat Oct 17 22:34:46 2026
+##INFO=<ID=BCSQ,Number=.,Type=String,Description="Haplotype-aware consequence annotation from BCFtools/csq, see http://samtools.github.io/bcftools/howtos/csq-calling.html for details. Format: Consequence|gene|transcript|biotype|strand|amino_acid_change|dna_change">
+##FORMAT=<ID=BCSQ,Number=.,Type=Integer,Description="Bitmask of indexes to INFO/BCSQ, with interleaved first/second haplotype. Use \"bcftools query -f'[%CHROM\t%POS\t%SAMPLE\t%TBCSQ\n]'\" to translate.">
+##bcftools_viewVersion=1.24+htslib-1.24
+##bcftools_viewCommand=view -i INFO/BCSQ!="." variants/merged.annotated.vcf.gz; Date=Sat Oct 17 22:35:09 2026
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	InfluenzaA_Sample1	InfluenzaA_Sample2	InfluenzaA_Sample3
+CY034139.1	874	.	G	A	225.417	.	VDB=0.139238;SGB=-0.686358;MQSBZ=0;MQ0F=0;MQ=60;DP=49;DP4=0,0,21,17;AN=3;AC=3;BCSQ=missense|PB2|mrna_cds-ACF54608.1|protein_coding|+|292V>292I|874G>A	GT:PL:DP:AD:BCSQ	1:255,0:14:0,14:1	1:255,0:9:0,9:1	1:255,0:15:0,15:1
+CY034139.1	1659	.	C	T	228.381	.	VDB=0.136639;SGB=-0.662043;MQSBZ=0;MQ0F=0;MQ=60;RPBZ=-1.65198;MQBZ=0;BQBZ=1.70546;SCBZ=0.223607;DP=53;DP4=0,1,21,22;AN=3;AC=3;BCSQ=synonymous|PB2|mrna_cds-ACF54608.1|protein_coding|+|553I|1659C>T	GT:PL:DP:AD:BCSQ	1:255,0:9:0,9:1	1:255,0:14:0,14:1	1:255,0:21:1,20:1
+CY034138.1	758	.	T	G	158.918	.	VDB=0.791433;SGB=-0.651104;RPBZ=1.30558;MQBZ=0;MQSBZ=0;BQBZ=-0.271163;SCBZ=0;MQ0F=0;MQ=60;DP=13;DP4=0,2,4,4;AN=1;AC=1;BCSQ=missense|PB1|mrna_cds-ACF54606.1|protein_coding|+|251F>251C|758T>G	GT:PL:DP:AD:BCSQ	1:249,63:10:2,8:1	.:.:.:.:0	.:.:.:.:0
+CY034138.1	1632	.	A	T	91.6851	.	VDB=0.375922;SGB=-0.651104;RPBZ=0.595487;MQBZ=0;MQSBZ=0;BQBZ=0.786607;SCBZ=0;MQ0F=0;MQ=60;DP=13;DP4=2,2,5,3;AN=1;AC=1;BCSQ=synonymous|PB1|mrna_cds-ACF54606.1|protein_coding|+|542A|1632A>T	GT:PL:DP:AD:BCSQ	1:220,101:12:4,8:1	.:.:.:.:0	.:.:.:.:0
+CY034138.1	1998	.	C	T	225.417	.	VDB=0.400793;SGB=-0.680642;MQSBZ=0;MQ0F=0;MQ=60;DP=40;DP4=0,0,18,15;AN=3;AC=3;BCSQ=synonymous|PB1|mrna_cds-ACF54606.1|protein_coding|+|664H|1998C>T	GT:PL:DP:AD:BCSQ	1:255,0:12:0,12:1	1:157,0:4:0,4:1	1:255,0:17:0,17:1
+CY034138.1	2024	.	C	A	11.9282	.	VDB=0.78;SGB=-0.453602;RPBZ=0;MQBZ=0;MQSBZ=0;BQBZ=0.707107;SCBZ=0;MQ0F=0;MQ=60;DP=3;DP4=0,1,1,1;AN=1;AC=1;BCSQ=missense|PB1|mrna_cds-ACF54606.1|protein_coding|+|673S>673Y|2024C>A	GT:PL:DP:AD:BCSQ	.:.:.:.:0	1:68,29:3:1,2:1	.:.:.:.:0
+CY034138.1	2035	.	A	G	225.417	.	VDB=0.406086;SGB=-0.676189;MQSBZ=0;MQ0F=0;MQ=60;DP=13;DP4=0,0,8,3;AN=1;AC=1;BCSQ=missense|PB1|mrna_cds-ACF54606.1|protein_coding|+|677T>677A|2035A>G	GT:PL:DP:AD:BCSQ	1:255,0:11:0,11:1	.:.:.:.:0	.:.:.:.:0
+CY034132.1	23	.	G	A	8.99921	.	SGB=-0.379885;MQ0F=0;MQ=60;DP=1;DP4=0,0,0,1;AN=1;AC=1;BCSQ=synonymous|HA|mrna_cds-ACF54598.1|protein_coding|+|6L|23G>A	GT:PL:DP:AD:BCSQ	1:38,0:1:0,1:1	.:.:.:.:0	.:.:.:.:0
+CY034132.1	229	.	T	C	198.416	.	VDB=0.997128;SGB=-0.636426;MQSBZ=0;MQ0F=0;MQ=60;DP=15;DP4=0,0,5,8;AN=3;AC=3;BCSQ=missense|HA|mrna_cds-ACF54598.1|protein_coding|+|75I>75T|229T>C	GT:PL:DP:AD:BCSQ	1:228,0:7:0,7:1	1:155,0:4:0,4:1	1:77,0:2:0,2:1
+CY034132.1	454	.	C	T	127.416	.	VDB=0.459448;SGB=-0.556411;MQSBZ=0;MQ0F=0;MQ=60;DP=9;DP4=0,0,6,2;AN=3;AC=3;BCSQ=missense|HA|mrna_cds-ACF54598.1|protein_coding|+|150A>150V|454C>T	GT:PL:DP:AD:BCSQ	1:157,0:4:0,4:1	1:62,0:2:0,2:1	1:78,0:2:0,2:1
+CY034132.1	1173	.	G	A	218.417	.	VDB=0.192436;SGB=-0.511536;MQSBZ=0;MQ0F=0;MQ=60;DP=17;DP4=0,0,5,9;AN=3;AC=3;BCSQ=missense|HA|mrna_cds-ACF54598.1|protein_coding|+|390G>390R|1173G>A	GT:PL:DP:AD:BCSQ	1:129,0:3:0,3:1	1:135,0:4:0,4:1	1:248,0:7:0,7:1
+CY034132.1	1197	.	A	G	228.276	.	VDB=0.756524;SGB=-0.511536;MQSBZ=0;MQ0F=0;MQ=60;RPBZ=-1.57147;MQBZ=0;BQBZ=1.63772;SCBZ=-1.92759;DP=23;DP4=1,0,6,10;AN=3;AC=3;BCSQ=missense|HA|mrna_cds-ACF54598.1|protein_coding|+|398I>398V|1197A>G	GT:PL:DP:AD:BCSQ	1:149,0:3:0,3:1	1:157,0:4:0,4:1	1:255,0:10:1,9:1
+CY034132.1	1348	.	G	A	225.417	.	VDB=0.6;SGB=-0.453602;MQSBZ=0;MQ0F=0;MQ=60;DP=21;DP4=0,0,9,7;AN=3;AC=3;BCSQ=missense|HA|mrna_cds-ACF54598.1|protein_coding|+|448G>448E|1348G>A	GT:PL:DP:AD:BCSQ	1:98,0:2:0,2:1	1:177,0:4:0,4:1	1:255,0:10:0,10:1
+CY034135.1	982	.	T	G	201.202	.	VDB=0.803742;SGB=-0.688148;RPBZ=1.49254;MQBZ=0;MQSBZ=0;BQBZ=0;SCBZ=0;MQ0F=0;MQ=60;DP=23;DP4=1,1,8,7;AN=1;AC=1;BCSQ=missense|NP|mrna_cds-ACF54602.1|protein_coding|+|319N>319K|982T>G	GT:PL:DP:AD:BCSQ	1:255,27:17:2,15:1	.:.:.:.:0	.:.:.:.:0
+CY034134.1	33	.	G	A	225.421	.	VDB=2.01419e-05;SGB=-0.683931;MQSBZ=0;MQ0F=0;MQ=60;DP=247;DP4=0,0,62,15;AN=3;AC=3;BCSQ=synonymous|NA|mrna_cds-ACF54601.1|protein_coding|+|11G|33G>A	GT:PL:DP:AD:BCSQ	1:255,0:13:0,12:1	1:255,0:56:0,56:1	1:255,0:8:0,8:1
+CY034134.1	36	.	A	G	225.421	.	VDB=2.01419e-05;SGB=-0.683931;MQSBZ=0;MQ0F=0;MQ=60;DP=248;DP4=0,0,62,15;AN=3;AC=3;BCSQ=synonymous|NA|mrna_cds-ACF54601.1|protein_coding|+|12S|36A>G	GT:PL:DP:AD:BCSQ	1:255,0:13:0,13:1	1:255,0:56:0,55:1	1:246,15:8:0,7:1
+CY034134.1	1252	.	A	G	225.421	.	VDB=0.960237;SGB=-0.693147;MQSBZ=0;MQ0F=0;MQ=60;DP=301;DP4=0,0,60,130;AN=3;AC=3;BCSQ=missense|NA|mrna_cds-ACF54601.1|protein_coding|+|418N>418D|1252A>G	GT:PL:DP:AD:BCSQ	1:255,0:71:0,71:1	1:255,0:49:0,48:1	1:255,0:70:0,70:1
+CY034134.1	1300	.	A	G	225.422	.	VDB=3.98652e-20;SGB=-0.693147;MQSBZ=0;MQ0F=0;MQ=60;DP=284;DP4=0,0,42,157;AN=3;AC=3;BCSQ=missense|NA|mrna_cds-ACF54601.1|protein_coding|+|434S>434G|1300A>G	GT:PL:DP:AD:BCSQ	1:255,0:74:0,73:1	1:255,0:53:0,52:1	1:255,0:72:0,71:1
+CY034134.1	1339	.	T	C	228.398	.	VDB=7.66107e-39;SGB=-0.693147;MQSBZ=0;MQ0F=0;MQ=60;RPBZ=0.118193;MQBZ=0;BQBZ=-0.833477;SCBZ=-0.276106;DP=242;DP4=0,1,24,171;AN=3;AC=3;BCSQ=synonymous|NA|mrna_cds-ACF54601.1|protein_coding|+|447L|1339T>C+1341G>C	GT:PL:DP:AD:BCSQ	1:255,0:74:0,74:1	1:255,0:53:0,53:1	1:255,0:69:1,68:1
+CY034134.1	1341	.	G	C	228.417	.	VDB=1.41526e-39;SGB=-0.693147;RPBZ=0.10588;MQBZ=0;MQSBZ=0;BQBZ=1.78218;SCBZ=2.17967;MQ0F=0;MQ=60;DP=240;DP4=0,1,22,173;AN=3;AC=3;BCSQ=@1339	GT:PL:DP:AD:BCSQ	1:255,0:74:1,73:1	1:255,0:53:0,52:1	1:255,0:69:0,69:1
+CY034133.1	502	.	A	G	228.398	.	VDB=0.998938;SGB=-0.693147;MQSBZ=0;MQ0F=0;MQ=60;RPBZ=1.67656;MQBZ=0;BQBZ=-1.39075;SCBZ=0.238249;DP=258;DP4=0,1,110,101;AN=3;AC=3;BCSQ=missense|M1|mrna_cds-ACF54599.1|protein_coding|+|168T>168A|502A>G	GT:PL:DP:AD:BCSQ	1:255,0:51:0,51:1	1:255,0:93:1,91:1	1:255,0:68:0,68:1
