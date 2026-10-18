@@ -89,7 +89,7 @@ Key outputs:
 | `reports/coding_variants.txt` | Variants restricted to coding regions |
 
 
-## 6. Annotated variants
+## 5. Annotated variants
 
 Variants below were selected from `reports/coding_variants.txt` because they
 fall within a coding sequence and are non-synonymous (missense).
@@ -128,13 +128,13 @@ CY034139.1	874	.	G	A	225.417	.	VDB=0.139238;SGB=-0.686358;MQSBZ=0;MQ0F=0;MQ=60;D
 CY034138.1	758	.	T	G	158.918	.	VDB=0.791433;SGB=-0.651104;RPBZ=1.30558;MQBZ=0;MQSBZ=0;BQBZ=-0.271163;SCBZ=0;MQ0F=0;MQ=60;DP=13;DP4=0,2,4,4;AN=1;AC=1;BCSQ=missense|PB1|mrna_cds-ACF54606.1|protein_coding|+|251F>251C|758T>G	GT:PL:DP:AD:BCSQ	1:249,63:10:2,8:1	.:.:.:.:0	.:.:.:.:0
 ```
 
-## 7. IGV verification
+## 6. IGV verification
 
 To visually confirm the call for variant 1 against the translated coding sequence, I used IGV. The codon change at genomic position CY034139.1:874 from GTA to ATA changed the amino acid from Valine to Isoleucine, as seen in IGV. The orange rectangle shows the reference genome nucleotide 'G', and the purple rectangle shows the sample's variant nucleotide 'A'.
 
 ![](IGV/variant_influenzaA.png)
 
-## 8. Cleaning up
+## 7. Cleaning up
 
 ```bash
 make clean
