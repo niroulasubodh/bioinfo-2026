@@ -13,4 +13,4 @@ This repository contains assignments from the Fall 2026 Applied Bioinformatics c
  5. [Week05](https://github.com/niroulasubodh/bioinfo-2026/tree/main/week05)
  6. [Week06](https://github.com/niroulasubodh/bioinfo-2026/tree/main/week06)
  7. [Week07](https://github.com/niroulasubodh/bioinfo-2026/tree/main/week07)
- 8. [Week07](https://github.com/niroulasubodh/bioinfo-2026/tree/main/week08)
+ 8. [Week08](https://github.com/niroulasubodh/bioinfo-2026/tree/main/week08)
