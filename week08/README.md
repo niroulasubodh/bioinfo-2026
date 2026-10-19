@@ -130,7 +130,7 @@ CY034138.1	758	.	T	G	158.918	.	VDB=0.791433;SGB=-0.651104;RPBZ=1.30558;MQBZ=0;MQ
 
 ## 6. IGV verification
 
-To visually confirm the call for variant 1 against the translated coding sequence, I used IGV. The codon change at genomic position CY034139.1:874 from GTA to ATA changed the amino acid from Valine to Isoleucine, as seen in IGV. The orange rectangle shows the reference genome nucleotide 'G', and the black rectangle shows the sample's variant nucleotide 'A'.
+To visually confirm the call for variant 1 against the translated coding sequence, I used IGV. The codon change at genomic position CY034139.1:874 from GTA to ATA changed the amino acid from Valine to Isoleucine, as seen in IGV. The orange rectangle shows the reference genome nucleotide 'G', and the green rectangle shows the sample's variant nucleotide 'A'.
 
 ![](IGV/variant_influenzaA.png)
 
