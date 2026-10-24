@@ -1,0 +1,57 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+#!genome-build ASM3791505v1
+#!genome-build-accession NCBI_Assembly:GCA_037915055.1
+##sequence-region CY034139.1 1 2290
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=382835
+CY034139.1	Genbank	region	1	2290	.	+	.	ID=CY034139.1:1..2290;Dbxref=taxon:382835;Name=1;collection-date=1933;country=United Kingdom;gbkey=Src;lab-host=Egg passage(s);mol_type=viral cRNA;nat-host=Human;segment=1;serotype=H1N1;strain=A/WSN/1933
+CY034139.1	Genbank	gene	1	2280	.	+	.	ID=gene-PB2;Name=PB2;gbkey=Gene;gene=PB2;gene_biotype=protein_coding
+CY034139.1	Genbank	CDS	1	2280	.	+	0	ID=cds-ACF54608.1;Parent=gene-PB2;Dbxref=NCBI_GP:ACF54608.1;Name=ACF54608.1;gbkey=CDS;gene=PB2;product=polymerase PB2;protein_id=ACF54608.1
+##sequence-region CY034138.1 1 2303
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=382835
+CY034138.1	Genbank	region	1	2303	.	+	.	ID=CY034138.1:1..2303;Dbxref=taxon:382835;Name=2;collection-date=1933;country=United Kingdom;gbkey=Src;lab-host=Egg passage(s);mol_type=viral cRNA;nat-host=Human;segment=2;serotype=H1N1;strain=A/WSN/1933
+CY034138.1	Genbank	gene	7	2280	.	+	.	ID=gene-PB1;Name=PB1;gbkey=Gene;gene=PB1;gene_biotype=protein_coding
+CY034138.1	Genbank	CDS	7	2280	.	+	0	ID=cds-ACF54606.1;Parent=gene-PB1;Dbxref=NCBI_GP:ACF54606.1;Name=ACF54606.1;gbkey=CDS;gene=PB1;product=polymerase PB1;protein_id=ACF54606.1
+CY034138.1	Genbank	gene	101	373	.	+	.	ID=gene-PB1-F2;Name=PB1-F2;gbkey=Gene;gene=PB1-F2;gene_biotype=protein_coding
+CY034138.1	Genbank	CDS	101	373	.	+	0	ID=cds-ACF54607.1;Parent=gene-PB1-F2;Dbxref=NCBI_GP:ACF54607.1;Name=ACF54607.1;gbkey=CDS;gene=PB1-F2;product=PB1-F2 protein;protein_id=ACF54607.1
+##sequence-region CY034137.1 1 2202
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=382835
+CY034137.1	Genbank	region	1	2202	.	+	.	ID=CY034137.1:1..2202;Dbxref=taxon:382835;Name=3;collection-date=1933;country=United Kingdom;gbkey=Src;lab-host=Egg passage(s);mol_type=viral cRNA;nat-host=Human;segment=3;serotype=H1N1;strain=A/WSN/1933
+CY034137.1	Genbank	gene	11	2161	.	+	.	ID=gene-PA;Name=PA;gbkey=Gene;gene=PA;gene_biotype=protein_coding
+CY034137.1	Genbank	CDS	11	2161	.	+	0	ID=cds-ACF54605.1;Parent=gene-PA;Dbxref=NCBI_GP:ACF54605.1;Name=ACF54605.1;gbkey=CDS;gene=PA;product=polymerase PA;protein_id=ACF54605.1
+##sequence-region CY034132.1 1 1725
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=382835
+CY034132.1	Genbank	region	1	1725	.	+	.	ID=CY034132.1:1..1725;Dbxref=taxon:382835;Name=4;collection-date=1933;country=United Kingdom;gbkey=Src;lab-host=Egg passage(s);mol_type=viral cRNA;nat-host=Human;segment=4;serotype=H1N1;strain=A/WSN/1933
+CY034132.1	Genbank	gene	6	1703	.	+	.	ID=gene-HA;Name=HA;gbkey=Gene;gene=HA;gene_biotype=protein_coding
+CY034132.1	Genbank	CDS	6	1703	.	+	0	ID=cds-ACF54598.1;Parent=gene-HA;Dbxref=NCBI_GP:ACF54598.1;Name=ACF54598.1;gbkey=CDS;gene=HA;product=hemagglutinin;protein_id=ACF54598.1
+CY034132.1	Genbank	signal_peptide_region_of_CDS	6	56	.	+	.	ID=id-ACF54598.1:1..17;Parent=cds-ACF54598.1;gbkey=Prot
+CY034132.1	Genbank	mature_protein_region_of_CDS	57	1034	.	+	.	ID=id-ACF54598.1:18..343;Parent=cds-ACF54598.1;gbkey=Prot;product=HA1
+CY034132.1	Genbank	mature_protein_region_of_CDS	1035	1700	.	+	.	ID=id-ACF54598.1:344..565;Parent=cds-ACF54598.1;gbkey=Prot;product=HA2
+##sequence-region CY034135.1 1 1526
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=382835
+CY034135.1	Genbank	region	1	1526	.	+	.	ID=CY034135.1:1..1526;Dbxref=taxon:382835;Name=5;collection-date=1933;country=United Kingdom;gbkey=Src;lab-host=Egg passage(s);mol_type=viral cRNA;nat-host=Human;segment=5;serotype=H1N1;strain=A/WSN/1933
+CY034135.1	Genbank	gene	26	1522	.	+	.	ID=gene-NP;Name=NP;gbkey=Gene;gene=NP;gene_biotype=protein_coding
+CY034135.1	Genbank	CDS	26	1522	.	+	0	ID=cds-ACF54602.1;Parent=gene-NP;Dbxref=NCBI_GP:ACF54602.1;Name=ACF54602.1;gbkey=CDS;gene=NP;product=nucleocapsid protein;protein_id=ACF54602.1
+##sequence-region CY034134.1 1 1368
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=382835
+CY034134.1	Genbank	region	1	1368	.	+	.	ID=CY034134.1:1..1368;Dbxref=taxon:382835;Name=6;collection-date=1933;country=United Kingdom;gbkey=Src;lab-host=Egg passage(s);mol_type=viral cRNA;nat-host=Human;segment=6;serotype=H1N1;strain=A/WSN/1933
+CY034134.1	Genbank	gene	1	1362	.	+	.	ID=gene-NA;Name=NA;gbkey=Gene;gene=NA;gene_biotype=protein_coding
+CY034134.1	Genbank	CDS	1	1362	.	+	0	ID=cds-ACF54601.1;Parent=gene-NA;Dbxref=NCBI_GP:ACF54601.1;Name=ACF54601.1;gbkey=CDS;gene=NA;product=neuraminidase;protein_id=ACF54601.1
+##sequence-region CY034133.1 1 984
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=382835
+CY034133.1	Genbank	region	1	984	.	+	.	ID=CY034133.1:1..984;Dbxref=taxon:382835;Name=7;collection-date=1933;country=United Kingdom;gbkey=Src;lab-host=Egg passage(s);mol_type=viral cRNA;nat-host=Human;segment=7;serotype=H1N1;strain=A/WSN/1933
+CY034133.1	Genbank	gene	1	982	.	+	.	ID=gene-M2;Name=M2;gbkey=Gene;gene=M2;gene_biotype=protein_coding
+CY034133.1	Genbank	CDS	1	26	.	+	0	ID=cds-ACF54600.1;Parent=gene-M2;Dbxref=NCBI_GP:ACF54600.1;Name=ACF54600.1;gbkey=CDS;gene=M2;product=matrix protein 2;protein_id=ACF54600.1
+CY034133.1	Genbank	CDS	715	982	.	+	1	ID=cds-ACF54600.1;Parent=gene-M2;Dbxref=NCBI_GP:ACF54600.1;Name=ACF54600.1;gbkey=CDS;gene=M2;product=matrix protein 2;protein_id=ACF54600.1
+CY034133.1	Genbank	gene	1	759	.	+	.	ID=gene-M1;Name=M1;gbkey=Gene;gene=M1;gene_biotype=protein_coding
+CY034133.1	Genbank	CDS	1	759	.	+	0	ID=cds-ACF54599.1;Parent=gene-M1;Dbxref=NCBI_GP:ACF54599.1;Name=ACF54599.1;gbkey=CDS;gene=M1;product=matrix protein 1;protein_id=ACF54599.1
+##sequence-region CY034136.1 1 845
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=382835
+CY034136.1	Genbank	region	1	845	.	+	.	ID=CY034136.1:1..845;Dbxref=taxon:382835;Name=8;collection-date=1933;country=United Kingdom;gbkey=Src;lab-host=Egg passage(s);mol_type=viral cRNA;nat-host=Human;segment=8;serotype=H1N1;strain=A/WSN/1933
+CY034136.1	Genbank	gene	2	839	.	+	.	ID=gene-NEP;Name=NEP;gbkey=Gene;gene=NEP;gene_biotype=protein_coding;gene_synonym=NS2
+CY034136.1	Genbank	CDS	2	31	.	+	0	ID=cds-ACF54604.1;Parent=gene-NEP;Dbxref=NCBI_GP:ACF54604.1;Name=ACF54604.1;Note=nonstructural protein 2;gbkey=CDS;gene=NEP;product=nuclear export protein;protein_id=ACF54604.1
+CY034136.1	Genbank	CDS	504	839	.	+	0	ID=cds-ACF54604.1;Parent=gene-NEP;Dbxref=NCBI_GP:ACF54604.1;Name=ACF54604.1;Note=nonstructural protein 2;gbkey=CDS;gene=NEP;product=nuclear export protein;protein_id=ACF54604.1
+CY034136.1	Genbank	gene	2	694	.	+	.	ID=gene-NS1;Name=NS1;gbkey=Gene;gene=NS1;gene_biotype=protein_coding
+CY034136.1	Genbank	CDS	2	694	.	+	0	ID=cds-ACF54603.1;Parent=gene-NS1;Dbxref=NCBI_GP:ACF54603.1;Name=ACF54603.1;gbkey=CDS;gene=NS1;product=nonstructural protein 1;protein_id=ACF54603.1
+###
