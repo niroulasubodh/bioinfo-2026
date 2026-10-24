@@ -52,7 +52,7 @@ the **full multi-sample pipeline** in one command:
    default, override with `JOBS=8` etc.): downloads reads sized to
    `BATCH_COVERAGE`, aligns,
    measures actual depth, and enforces `MIN_MEAN_DEPTH=10` before
-   calling variants (`make single-all` per sample).
+   calling variants.
 3. **Merges** all 10 per-sample VCFs.
 4. **Annotates** coding effects with `bcftools csq`.
 5. Writes `reports/coding_variants.txt` — only the variants that fall
@@ -90,7 +90,7 @@ Removes `genome/`, `fastq/`, `align/`, `variants/`, `reports/`, and
 | `ORG_NAME` | `InfluenzaA` | Label for shared genome/annotation files |
 | `DESIGN_CSV` | `design.csv` | Path to the design file driving the batch |
 | `BATCH_COVERAGE` | `100` | Target depth per sample in `make batch`/`make all` |
-| `MIN_MEAN_DEPTH` | `10` | Minimum mean aligned depth enforced before calling variants (assignment requirement) |
+| `MIN_MEAN_DEPTH` | `10` | Minimum mean aligned depth enforced before calling variants |
 | `JOBS` | `4` | Samples processed concurrently in `make batch` |
 | `PLOIDY` | `1` | Haploid calling, appropriate for this viral reference |
 
