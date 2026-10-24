@@ -1,10 +1,6 @@
 # Multi-Sample Variant Calling Pipeline
 
-A `make`-driven pipeline that, from a single `design.csv`, downloads a
-shared reference genome once, then for every sample in the design
-file: downloads SRA reads (sized to a target coverage), aligns them,
-and calls variants — all in parallel — before merging every sample's
-calls into one multi-sample VCF and annotating coding-region effects.
+A make-driven pipeline that, from a single design.csv, downloads a shared reference genome once, then for every sample in the design file: downloads SRA reads (sized to a target coverage), aligns them, and calls variants, all in parallel, before merging every sample's calls into one multi-sample VCF and annotating coding-region effects.
 
 ---
 
