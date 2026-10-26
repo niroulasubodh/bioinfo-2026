@@ -1,3 +1,0 @@
-Reference_bases	13243
-Mean_depth	279.478743
-Percent_bases_at_least_10x	99.83
