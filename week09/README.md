@@ -177,4 +177,3 @@ Removes generated `genome/`, `fastq/`, `align/`, `variants/`, `reports/`, and `d
 | `make coding` | Export variants with coding annotations |
 | `make clean` | Remove generated data and results directories |
 
-**Note:** This README documents the current separated workflow: **one sample per Makefile invocation**, with **batch scheduling in `scripts/run_parallel.sh`**. Unlike an older version of the pipeline, `make all` does not automatically detect `design.csv` and launch a batch.
