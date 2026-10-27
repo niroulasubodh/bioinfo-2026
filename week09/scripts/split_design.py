@@ -1,106 +1,55 @@
-"""
-Parse a design.csv with an arbitrary column set and extract what the
-Makefile needs, by COLUMN NAME (case-insensitive), not by position.
-
-Required columns (any name match, case-insensitive): "Run", and either
-"Sample" OR "BioSample" (if "Sample" is absent, "BioSample" values are
-used as the sample name instead). All other columns (BioProject, Group,
-Condition, Mutation, etc.) are optional, may appear in any order/number,
-and are preserved verbatim as metadata.
-
-Usage:
-  split_design.py <design.csv> <batch_rows_out.tsv> <sample_groups_out.tsv>
-      Writes:
-        batch_rows_out.tsv    : Run<TAB>Sample   (one line per sample row,
-                                 consumed by `make batch`'s xargs fan-out)
-        sample_groups_out.tsv : Sample<TAB>Run<TAB>col3<TAB>col4...
-                                 (full metadata, header included, for
-                                 reports/sample_groups.tsv)
-
-  split_design.py --samples-only <design.csv>
-      Prints one Sample name per line (for Makefile $(shell ...) use).
-"""
+#!/usr/bin/env python3
+"""Parse SRA design CSV, preserve metadata, and write Run/Sample batch rows."""
 import csv
 import sys
 
-
-def load_rows(path):
-    with open(path, newline="") as f:
-        text = f.read()
-    # Tolerate Windows line endings.
-    text = text.replace("\r\n", "\n").replace("\r", "\n")
-    reader = csv.reader(text.splitlines())
-    rows = [r for r in reader if any(cell.strip() for cell in r)]
+def load(path):
+    with open(path, newline='', encoding='utf-8-sig') as f:
+        rows = [r for r in csv.reader(f) if any(c.strip() for c in r)]
     if not rows:
-        sys.exit("ERROR: design.csv is empty.")
-    header = rows[0]
-    data = rows[1:]
-
-    norm = [h.strip().lower() for h in header]
-    try:
-        run_idx = norm.index("run")
-    except ValueError:
-        sys.exit('ERROR: design.csv header must include a "Run" column.')
-    sample_idx = None
-    sample_source = None
-    if "sample" in norm:
-        sample_idx = norm.index("sample")
-        sample_source = "Sample"
-    elif "biosample" in norm:
-        sample_idx = norm.index("biosample")
-        sample_source = "BioSample"
-    else:
-        sys.exit(
-            'ERROR: design.csv header must include a "Sample" or '
-            '"BioSample" column.'
-        )
-
-    return header, data, run_idx, sample_idx, sample_source
-
+        sys.exit('ERROR: design file is empty')
+    header, data = rows[0], rows[1:]
+    norm = [c.strip().lower() for c in header]
+    if 'run' not in norm:
+        sys.exit('ERROR: missing Run column')
+    if 'sample' not in norm and 'biosample' not in norm:
+        sys.exit('ERROR: missing Sample or BioSample column')
+    runidx = norm.index('run')
+    sampleidx = norm.index('sample' if 'sample' in norm else 'biosample')
+    other = [i for i in range(len(header)) if i not in (runidx, sampleidx)]
+    result = []
+    seen = set()
+    for lineno, row in enumerate(data, start=2):
+        if len(row) != len(header):
+            sys.exit(f'ERROR: CSV row {lineno} contains {len(row)} fields; expected {len(header)}')
+        run = row[runidx].strip()
+        sample = row[sampleidx].strip()
+        if not run or not sample:
+            sys.exit(f'ERROR: missing Run or Sample in row {lineno}')
+        if sample in seen:
+            sys.exit(f'ERROR: duplicate sample {sample!r} in row {lineno}; each Run requires a unique Sample name')
+        if any(c.isspace() for c in sample) or any(c.isspace() for c in run):
+            sys.exit(f'ERROR: whitespace in Run or Sample at row {lineno}; use safe identifiers')
+        seen.add(sample)
+        result.append((run, sample, [row[i] for i in other]))
+    return header, other, result
 
 def main():
     args = sys.argv[1:]
-    if args and args[0] == "--samples-only":
-        header, data, run_idx, sample_idx, _ = load_rows(args[1])
-        seen = set()
-        for row in data:
-            sample = row[sample_idx].strip()
-            if sample and sample not in seen:
-                seen.add(sample)
-                print(sample)
+    if len(args) == 2 and args[0] == '--samples-only':
+        _, _, records = load(args[1])
+        for _, sample, _ in records:
+            print(sample)
         return
-
     if len(args) != 3:
-        sys.exit(__doc__)
+        sys.exit('Usage: split_design.py [--samples-only design.csv | design.csv batch_rows.tsv sample_groups.tsv]')
+    header, other, records = load(args[0])
+    with open(args[1], 'w', newline='') as f, open(args[2], 'w', newline='') as g:
+        r, m = csv.writer(f, delimiter='\t'), csv.writer(g, delimiter='\t')
+        m.writerow(['Sample', 'Run'] + [header[i] for i in other])
+        for run, sample, metadata in records:
+            r.writerow([run, sample])
+            m.writerow([sample, run] + metadata)
 
-    design_csv, batch_rows_out, sample_groups_out = args
-    header, data, run_idx, sample_idx, sample_source = load_rows(design_csv)
-    print(f">> Using '{header[sample_idx]}' column as Sample name.", file=sys.stderr)
-
-    seen_samples = {}
-    with open(batch_rows_out, "w") as rows_f, open(sample_groups_out, "w") as groups_f:
-        other_idx = [i for i in range(len(header)) if i not in (run_idx, sample_idx)]
-        groups_f.write(
-            "\t".join(["Sample", "Run"] + [header[i] for i in other_idx]) + "\n"
-        )
-        for row in data:
-            run = row[run_idx].strip()
-            sample = row[sample_idx].strip()
-            if not run or not sample:
-                continue
-            if sample in seen_samples:
-                sys.exit(
-                    f"ERROR: duplicate Sample '{sample}' in design.csv "
-                    f"(rows with Run={seen_samples[sample]} and Run={run}). "
-                    "Sample names must be unique."
-                )
-            seen_samples[sample] = run
-            rows_f.write(f"{run}\t{sample}\n")
-            groups_f.write(
-                "\t".join([sample, run] + [row[i] if i < len(row) else "" for i in other_idx])
-                + "\n"
-            )
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

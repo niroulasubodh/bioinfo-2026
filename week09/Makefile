@@ -15,62 +15,11 @@ export PATH := $(TOOLS_DIR):$(PATH)
 .NOTPARALLEL:
 
 # =========================================================
-# Generate a multi-sample VCF + annotate variant effects
-# Purpose: Downloads a reference genome + GFF annotation once,
-# then for each sample: downloads SRA reads, aligns, calls
-# variants. Finally merges all per-sample VCFs and annotates
-# coding effects with bcftools csq.
-#
-#   make genome      -> download reference genome
-#   make annotation  -> download reference GFF (gene models)
-#   make fastq       -> download SRA reads (paired-end) sized to target coverage
-#   make align       -> align reads and create BAM file
-#   make variants     -> call variants for ONE sample (SRR_ACCESSION + SAMPLE_NAME)
-#   make single-all   -> genome + fastq + align + coverage + variants + stats (one sample)
-#   make batch        -> read design.csv and run the
-#                         single-sample pipeline for every row, in parallel (JOBS=)
-#   make merge        -> merge per-sample VCFs listed in SAMPLES into one multi-sample VCF
-#   make annotate     -> annotate the merged VCF with bcftools csq (gene/codon/AA change)
-#   make coding       -> list only the variants that fall in coding regions (have a BCSQ tag)
-#   make pipeline     -> batch + merge + annotate + coding (requires an existing design.csv)
-#   make all          -> SMART ENTRY POINT:
-#                           - if design.csv exists  -> same as `make pipeline`
-#                             (batch all samples in parallel, merge, annotate, coding)
-#                           - if design.csv is absent -> same as `make single-all`
-#   make clean        -> remove all generated files
-#
-# One-command multi-sample run (this is what you want for the assignment):
-#   Drop your own design.csv in the project root. Only "Run" (SRA
-#   accession) is strictly required, plus a sample-name column --
-#   either "Sample" OR "BioSample" (if "Sample" is absent, BioSample
-#   values are used as the sample name). Matched BY NAME in the
-#   header, case-insensitively, in any position. Any other columns
-#   (BioProject, Group, Condition, Mutation, ...) are optional, may
-#   appear in any order/number, and are carried through untouched
-#   into reports/sample_groups.tsv for traceability -- they never
-#   affect how a sample is processed. Examples that all work:
-#        Run,Sample,Group,Condition
-#        SRR12345,WT1,Control,Rest
-#        SRR12346,WT2,Control,Rest
-#   or:
-#        Run,BioProject,BioSample,Mutation,Sample
-#        SRR12345,PRJNA1,SAMN1,None,WT1
-#        SRR12346,PRJNA1,SAMN2,del123,Mut1
-#   or (no "Sample" column at all -- BioSample is used instead):
-#        Run,BioProject,BioSample,Mutation
-#        SRR12345,PRJNA1,SAMN1,None
-#        SRR12346,PRJNA1,SAMN2,del123
-#   then just run:
-#        make all
-#   This downloads the shared genome/annotation once, runs every sample's
-#   fastq->align->variants in parallel (JOBS=4 by default; override with
-#   e.g. `make all JOBS=8`), merges all per-sample VCFs, annotates with
-#   bcftools csq, and writes reports/coding_variants.txt -- no need to
-#   separately call merge/annotate/coding yourself.
-#
-# Single-sample sanity check (no design.csv involved):
-#   make single-all SRR_ACCESSION=SRR1111111 SAMPLE_NAME=SampleA
-#
+# Single-sample variant-calling Makefile.
+# Every invocation of `make single-all` processes ONE Run/Sample pair.
+# Use `make design parallel=4 N=10` to schedule ten samples, four at a time.
+# `make prepare-shared` downloads/indexes the common reference ONCE.
+# After all jobs finish, `make merge annotate coding` combines results.
 # =========================================================
 
 # ---------------------------------------------------------
@@ -163,7 +112,7 @@ DESIGN_CSV      ?= design.csv
 # auto-populated from design.csv's "Sample" column -- found BY NAME
 # in the header, not by position, so extra columns (BioProject,
 # BioSample, Mutation, Group, Condition, in any order) are fine --
-# so that `make merge annotate coding` works right after `make batch`
+# so that `make merge annotate coding` works after run_parallel.sh
 # with no extra typing.
 DESIGN_SAMPLES  := $(shell [ -f $(DESIGN_CSV) ] && python3 scripts/split_design.py --samples-only $(DESIGN_CSV) 2>/dev/null)
 ifneq ($(strip $(DESIGN_SAMPLES)),)
@@ -172,31 +121,16 @@ else
 SAMPLES ?= $(SAMPLE_NAME)
 endif
 
-# ---------------------------------------------------------
-# Batch settings -- shared coverage/read-length applied to every
-# row when running `make batch` (override on the command line if
-# a specific sample needs different values; rerun `make single-all`
-# for that one SAMPLE_NAME afterward). Realistically high coverage
-# for confident variant detection on a small (~13.5 kb) viral genome
-# -- because the genome is tiny, even 100x only needs a few thousand
-# read pairs per sample, so ten samples still finish quickly on a laptop.
-# ---------------------------------------------------------
-BATCH_COVERAGE  ?= 100
-BATCH_READ_LEN  ?= $(READ_LEN)
-DESIGN_DIR      := design
-BATCH_ROWS      := $(DESIGN_DIR)/.batch_rows.csv
-# NOTE: REPORT_DIR must be defined (see "Folder layout" below) BEFORE
-# SAMPLE_GROUPS is computed -- := is immediate expansion in Make, so
-# referencing REPORT_DIR here before its own definition would silently
-# resolve to an empty string. REPORT_DIR is defined just below instead,
-# and SAMPLE_GROUPS is set right after it.
-
-# Number of samples to process concurrently in `make batch`/`make all`.
-# Each sample's fastq->align->variants runs as its own independent `make`
-# subprocess (not make's -j graph parallelism, which stays off via
-# .NOTPARALLEL for this Makefile's own targets), so raise/lower this to
-# match your CPU/network/disk headroom, e.g. `make all JOBS=8`.
-JOBS ?= 4
+# Batch settings passed to scripts/run_parallel.sh.
+# `N=all` selects all valid rows, or `N=10` selects the first ten.
+# `parallel=4` sets the maximum number of simultaneously running samples.
+N ?= all
+parallel ?= 4
+BATCH_COVERAGE ?= 100
+BATCH_READ_LEN ?= $(READ_LEN)
+BIOPROJECT ?= PRJNA257197
+DESIGN_DIR := design
+BATCH_ROWS := $(DESIGN_DIR)/.batch_rows.tsv
 
 # ---------------------------------------------------------
 # Folder layout
@@ -236,7 +170,7 @@ VCF_STATS := $(REPORT_DIR)/$(SAMPLE_NAME)_vcf_stats.txt
 DEPTH_FILE      := $(REPORT_DIR)/$(SAMPLE_NAME)_depth.tsv
 COVERAGE_REPORT := $(REPORT_DIR)/$(SAMPLE_NAME)_coverage.txt
 
-# Multi-sample outputs (built from $(SAMPLES), not just SAMPLE_NAME)
+# Optional merged outputs (built from $(SAMPLES), not just SAMPLE_NAME)
 MERGED_VCF    := $(VARIANT_DIR)/merged.vcf.gz
 ANNOTATED_VCF := $(VARIANT_DIR)/merged.annotated.vcf.gz
 CODING_REPORT := $(REPORT_DIR)/coding_variants.txt
@@ -248,53 +182,19 @@ MIN_MEAN_DEPTH ?= 10
 # Change this for organisms requiring a different ploidy model.
 PLOIDY ?= 1
 
-.PHONY: all single-all genome annotation fastq align clean check-config coverage \
-        check-coverage variants stats check-tools merge annotate coding \
-        batch pipeline help
+.PHONY: all single-all prepare-shared genome annotation fastq align clean check-config coverage \
+        check-coverage variants stats check-tools merge annotate coding help design download-design
 
-# Bare `make` prints usage instead of launching a run.
 help:
-	@echo "Multi-sample variant calling pipeline"
-	@echo "======================================"
-	@echo ""
-	@echo "QUICK START (multi-sample, recommended):"
-	@echo "  1. Put your design.csv in this directory. Required: a 'Run' column"
-	@echo "     (SRA accession) and either a 'Sample' or 'BioSample' column."
-	@echo "     Extra columns (BioProject, Group, Condition, Mutation, ...) are"
-	@echo "     fine in any order -- carried through as metadata only."
-	@echo "  2. Run:  make all"
-	@echo "     This downloads the genome once, then for every row in"
-	@echo "     design.csv: downloads reads, aligns, calls variants (in"
-	@echo "     parallel, JOBS=4 by default) -- then merges all samples,"
-	@echo "     annotates variant effects, and lists coding-region variants."
-	@echo ""
-	@echo "QUICK START (single sample, no design.csv):"
-	@echo "  make all SRR_ACCESSION=SRR1234567 SAMPLE_NAME=MySample"
-	@echo ""
-	@echo "COMMON OVERRIDES (pass as VAR=value on the command line):"
-	@echo "  Genome_Accession_Number=GCF_...   Genome_Accession_Name=...  ORG_NAME=..."
-	@echo "  PLOIDY=1|2            haploid (default) vs diploid calling"
-	@echo "  COVERAGE / BATCH_COVERAGE=100      target sequencing depth"
-	@echo "  JOBS=4                 parallel samples in 'make batch'/'make all'"
-	@echo "  DESIGN_CSV=path.csv    use a design file at a non-default path"
-	@echo ""
-	@echo "ALL TARGETS:"
-	@echo "  make genome       download reference genome"
-	@echo "  make annotation   download + patch reference GFF (gene models)"
-	@echo "  make fastq        download SRA reads sized to target coverage (one sample)"
-	@echo "  make align        align reads, create sorted/indexed BAM (one sample)"
-	@echo "  make variants     call variants for one sample (SRR_ACCESSION + SAMPLE_NAME)"
-	@echo "  make stats        VCF summary stats for one sample"
-	@echo "  make single-all   genome+fastq+align+variants+stats, one sample"
-	@echo "  make batch        run every row of design.csv in parallel"
-	@echo "  make merge        merge per-sample VCFs (uses SAMPLES, auto-filled from design.csv)"
-	@echo "  make annotate     bcftools csq annotation of the merged VCF"
-	@echo "  make coding       list only coding-region variants (BCSQ tag present)"
-	@echo "  make pipeline     batch + merge + annotate + coding (needs existing design.csv)"
-	@echo "  make all          SMART: design.csv present -> pipeline; absent -> single-all"
-	@echo "  make clean        remove all generated files"
-	@echo ""
-	@echo "See README.md for a full walkthrough."
+	@echo "Single-sample variant calling Makefile"
+	@echo "  make single-all SRR_ACCESSION=SRR12345 SAMPLE_NAME=SampleA"
+	@echo "  make all SRR_ACCESSION=SRR12345 SAMPLE_NAME=SampleA  # identical"
+	@echo "  make prepare-shared  # once, before running parallel samples"
+	@echo "  make download-design BIOPROJECT=PRJNA257197 # download SRA metadata"
+	@echo "  make design parallel=4 N=10       # first 10 CSV samples; 4 in parallel"
+	@echo "  make design parallel=4 N=all      # all CSV samples; 4 in parallel"
+	@echo "  make merge annotate coding SAMPLES="..."   # merge selected samples"
+	@echo "  make clean                       # delete generated files"
 
 # Fail early with actionable instructions rather than command-not-found (127).
 check-tools:
@@ -314,24 +214,42 @@ $(NUM_READS_FILE) $(FASTQ_R1) $(FASTQ_R2) $(BAM_OUT): | check-tools
 
 single-all: genome fastq align variants stats
 
-# ==========================================================
-# ALL: smart entry point.
-#   - design.csv present  -> run the full multi-sample pipeline
-#     (batch every row in parallel, merge, annotate, coding).
-#   - design.csv absent   -> fall back to the single-sample
-#     pipeline (genome+fastq+align+variants+stats) using
-#     SRR_ACCESSION/SAMPLE_NAME, exactly like before.
-# ==========================================================
-all:
-	@if [ -f $(DESIGN_CSV) ]; then \
-		echo ">> $(DESIGN_CSV) found -- running full multi-sample pipeline (batch + merge + annotate + coding)."; \
-		$(MAKE) pipeline; \
-	else \
-		echo ">> No $(DESIGN_CSV) found -- running single-sample pipeline for SRR_ACCESSION=$(SRR_ACCESSION) SAMPLE_NAME=$(SAMPLE_NAME)."; \
-		echo ">> (Drop a design.csv in the project root, or run 'make design', to process a batch of samples instead.)"; \
-		$(MAKE) single-all; \
-	fi
+# ALWAYS process one sample; never detect design.csv or launch a batch.
+all: single-all
 
+# Build shared reference and indexes before external parallel processing.
+# This avoids races when independent Make processes start concurrently.
+prepare-shared: genome annotation $(GENOME_FA).bwt $(GENOME_FA).fai
+
+
+# ==========================================================
+# DOWNLOAD DESIGN FILE FROM NCBI
+# ==========================================================
+# Download NCBI SRA RunInfo for a BioProject, preserving all metadata columns.
+# Use a temporary file and validate before replacing design.csv.
+# Requires Entrez Direct (esearch and efetch).
+
+.PHONY: download-design
+
+BIOPROJECT ?= PRJNA1177455
+DESIGN_CSV ?= design.csv
+
+download-design:
+	@bash scripts/download_design.sh "$(BIOPROJECT)" "$(DESIGN_CSV)"
+
+
+# ==========================================================
+# PARALLEL PROCESSING OF MULTIPLE SAMPLES
+# ==========================================================
+
+.PHONY: design
+
+parallel ?= 4
+N ?= all
+
+design:
+	@bash scripts/run_parallel.sh "$(parallel)" "$(DESIGN_CSV)" "$(N)" "$(BATCH_COVERAGE)" "$(BATCH_READ_LEN)"
+	
 # ==========================================================
 # GENOME: download genome, decompress a copy for indexing,
 # rename using ORG_NAME, and record genome size (bp)
@@ -578,71 +496,11 @@ $(VCF_STATS): $(VCF_OUT) $(VCF_OUT).csi | check-tools
 	@echo ">> Statistics report created: $@"
 
 # ==========================================================
-# BATCH: run the single-sample pipeline (genome + fastq +
-# align + coverage + variants + stats) for every row in
-# design.csv, $(JOBS) samples at a time in parallel via a
-# bash background-job loop (portable across GNU/BSD, no
-# external xargs command-length limits). The shared genome/GFF
-# are downloaded once, up front, before fan-out, so parallel
-# samples never race each other building those files. All rows share
-# BATCH_COVERAGE/BATCH_READ_LEN; override on the command line
-# if a specific sample needs different values (rerun
-# `make single-all` for that one SAMPLE_NAME after).
-#
-# COLUMN HANDLING: the header is read by NAME, not position.
-# Only "Run" and "Sample" columns are required (any order,
-# case-insensitive) -- they drive the pipeline (SRR_ACCESSION
-# and SAMPLE_NAME). Any other columns (BioProject, BioSample,
-# Group, Condition, Mutation, ...) are optional, may appear in
-# any order/number, and are carried through verbatim into
-# $(SAMPLE_GROUPS) as metadata -- they never affect how a
-# sample is processed.
-# ==========================================================
-
-batch: $(DESIGN_CSV) | check-tools
-	@mkdir -p $(REPORT_DIR) $(DESIGN_DIR)
-	@python3 scripts/split_design.py $(DESIGN_CSV) $(BATCH_ROWS) $(SAMPLE_GROUPS)
-	@echo ">> Downloading shared genome + annotation and pre-building shared indexes before fanning out ..."
-	@echo ">> (Avoids a race where multiple parallel samples build the same bwa/samtools index at once.)"
-	@$(MAKE) genome annotation $(GENOME_FA).bwt $(GENOME_FA).fai
-	@echo ">> Running $$(wc -l < $(BATCH_ROWS)) sample(s) with up to $(JOBS) in parallel (coverage=$(BATCH_COVERAGE) read_len=$(BATCH_READ_LEN)) ..."
-	@running=0; \
-	while IFS=$$'\t' read -r run sample; do \
-		[ -z "$$run" ] && continue; \
-		( \
-			echo "=============================================================="; \
-			echo ">> BATCH: sample=$$sample run=$$run"; \
-			echo "=============================================================="; \
-			$(MAKE) single-all SRR_ACCESSION=$$run SAMPLE_NAME=$$sample COVERAGE=$(BATCH_COVERAGE) READ_LEN=$(BATCH_READ_LEN) \
-				> $(REPORT_DIR)/$$sample.batch.log 2>&1 \
-				&& echo ">> OK: $$sample (log: $(REPORT_DIR)/$$sample.batch.log)" \
-				|| echo ">> FAILED: $$sample -- see $(REPORT_DIR)/$$sample.batch.log" >&2 \
-		) & \
-		running=$$((running + 1)); \
-		if [ "$$running" -ge $(JOBS) ]; then wait; running=0; fi; \
-	done < $(BATCH_ROWS); \
-	wait
-	@if grep -l FAILED $(REPORT_DIR)/*.batch.log >/dev/null 2>&1; then \
-		echo ">> One or more samples FAILED -- check the logs below:" >&2; \
-		grep -l FAILED $(REPORT_DIR)/*.batch.log >&2; \
-		exit 1; \
-	fi
-	@echo ">> Batch complete. Sample metadata map: $(SAMPLE_GROUPS)"
-	@echo ">> Per-sample logs: $(REPORT_DIR)/<sample>.batch.log"
-
-# Full multi-sample pipeline on an EXISTING design.csv:
-# batch (parallel) -> merge -> annotate -> coding.
-# This is what `make all` runs when design.csv is present.
-pipeline:
-	@$(MAKE) batch
-	@$(MAKE) merge annotate coding
-
-# ==========================================================
 # MERGE: combine per-sample VCFs (variants/<name>.vcf.gz for
 # each name in $(SAMPLES)) into one multi-sample VCF. Each
 # sample's VCF + index must already exist -- run
 # `make all SRR_ACCESSION=... SAMPLE_NAME=...` for every
-# sample first (or `make batch` after `make design`).
+# sample first (or run the external GNU Parallel launcher).
 # ==========================================================
 
 SAMPLE_VCFS := $(foreach s,$(SAMPLES),$(VARIANT_DIR)/$(s).vcf.gz)
@@ -653,7 +511,7 @@ $(MERGED_VCF): | check-tools
 	@echo ">> Merging VCFs for samples: $(SAMPLES)"
 	@for f in $(SAMPLE_VCFS); do \
 		if [ ! -f "$$f" ]; then \
-			echo "ERROR: missing $$f -- run 'make all SRR_ACCESSION=... SAMPLE_NAME=...' (or 'make batch') for that sample first." >&2; \
+			echo "ERROR: missing $$f -- run 'make all SRR_ACCESSION=... SAMPLE_NAME=...' (or run_parallel.sh) for that sample first." >&2; \
 			exit 1; \
 		fi; \
 	done
@@ -699,5 +557,5 @@ coding: $(ANNOTATED_VCF)
 # CLEAN
 # ==========================================================
 clean:
-	rm -rf $(GENOME_DIR) $(FASTQ_DIR) $(ALIGN_DIR) $(VARIANT_DIR) $(REPORT_DIR) $(DESIGN_DIR)
+	rm -rf $(GENOME_DIR) $(FASTQ_DIR) $(ALIGN_DIR) $(VARIANT_DIR) $(REPORT_DIR) design
 	@echo ">> Cleaned up all generated files and directories (design.csv you authored is kept; delete manually if desired)."

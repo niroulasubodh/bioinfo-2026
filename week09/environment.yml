@@ -1,7 +1,7 @@
 name: bioinfo-env
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
 dependencies:
   - python=3.11
   - sra-tools
@@ -10,3 +10,5 @@ dependencies:
   - bcftools
   - curl
   - gzip
+  - entrez-direct
+  - parallel
