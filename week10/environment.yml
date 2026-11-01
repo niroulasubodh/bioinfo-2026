@@ -1,0 +1,20 @@
+
+
+name: bioinfo-env
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - sra-tools
+  - bwa
+  - samtools
+  - macs3
+  - deeptools
+  - bedtools
+  - parallel
+  - curl
+  - gzip
+  - entrez-direct
+  - seqtk
+
