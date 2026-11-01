@@ -32,7 +32,7 @@ The environment needs `sra-tools`, `bwa`, `samtools`, `macs3`, `deeptools`, `seq
 make download-design BIOPROJECT=PRJNA935800
 ```
 
-The resulting `design.csv` must contain `Run` and `Sample` (or `BioSample`) columns. Add or retain a `Group` column identifying infected and control samples, and select the appropriate two replicates per group. Downloaded SRA RunInfo may contain more than the intended four runs.
+The resulting `design.csv` must contain `Run` and `Sample` (or `BioSample`) columns. Add or retain a `Group` column identifying infected and control samples, and select the appropriate two replicates per group. 
 
 ## 4. Workflow
 
@@ -136,4 +136,4 @@ Load the matching chromosome reference, each sample's `.bw` coverage track, and 
 make clean
 ```
 
-This removes generated reference, FASTQ, alignment, peak, coverage-track, and report directories. It preserves your original `design.csv`, Makefile, and scripts.
+This removes generated reference, FASTQ, alignment, peak, coverage-track, and report directories. 
