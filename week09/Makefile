@@ -82,10 +82,9 @@ COVERAGE      ?= 10
 # inaccurate value will over/under-shoot the actual coverage
 # achieved, though the pipeline will still run fine.
 READ_LEN      ?= 50
-# NUM_READS is a fallback/manual override; the fastq target
-# will auto-estimate the read count from COVERAGE and genome
-# size unless you explicitly pass NUM_READS=<value> on the CLI.
-NUM_READS     ?=
+# Download the first 10,000 SRA spots by default with fastq-dump -X.
+# Override with NUM_READS=<value>; NUM_READS= uses coverage estimation.
+NUM_READS     ?= 10000
 
 # design.csv layout: ANY columns, in ANY order -- only "Run" (SRA
 # accession) is required, plus a sample-name column: "Sample" if
@@ -198,7 +197,7 @@ help:
 
 # Fail early with actionable instructions rather than command-not-found (127).
 check-tools:
-	@missing=""; for tool in curl gzip prefetch fasterq-dump bwa samtools bcftools; do \
+	@missing=""; for tool in curl gzip fastq-dump bwa samtools bcftools; do \
 		command -v "$$tool" >/dev/null 2>&1 || missing="$$missing $$tool"; \
 	done; \
 	if [ -n "$$missing" ]; then \
@@ -358,30 +357,16 @@ else
 	@echo ">> Using manually specified NUM_READS=$(NUM_READS)"
 endif
 
-# NOTE: fasterq-dump (unlike the older fastq-dump) has NO -X /
-# spot-count-limiting option -- it always extracts the full run.
-# So we download the full paired FASTQ files first, then truncate
-# each to the estimated number of read pairs using `head` (4 lines
-# per FASTQ record) before compressing/renaming.
+# Limit extraction directly with -X; keep paired, compressed output for BWA.
 $(FASTQ_R1) $(FASTQ_R2): $(NUM_READS_FILE)
 	@mkdir -p $(FASTQ_DIR)
 	@READS=$$(cat $(NUM_READS_FILE)); \
-	echo ">> Downloading full run $(SRR_ACCESSION) (will subset to $$READS read pairs after download) ..."; \
-	prefetch $(SRR_ACCESSION) -O $(FASTQ_DIR); \
-	fasterq-dump --split-files -O $(FASTQ_DIR) $(FASTQ_DIR)/$(SRR_ACCESSION)/$(SRR_ACCESSION).sra
-	@echo ">> Subsetting to estimated read count (fasterq-dump has no -X option; truncating post-download) ..."
-	@READS=$$(cat $(NUM_READS_FILE)); \
-	LINES=$$((READS * 4)); \
-	head -n $$LINES $(FASTQ_DIR)/$(SRR_ACCESSION)_1.fastq > $(FASTQ_DIR)/$(SRR_ACCESSION)_1.sub.fastq; \
-	head -n $$LINES $(FASTQ_DIR)/$(SRR_ACCESSION)_2.fastq > $(FASTQ_DIR)/$(SRR_ACCESSION)_2.sub.fastq; \
-	mv $(FASTQ_DIR)/$(SRR_ACCESSION)_1.sub.fastq $(FASTQ_DIR)/$(SRR_ACCESSION)_1.fastq; \
-	mv $(FASTQ_DIR)/$(SRR_ACCESSION)_2.sub.fastq $(FASTQ_DIR)/$(SRR_ACCESSION)_2.fastq
-	@echo ">> Compressing and renaming FASTQ files ..."
-	gzip -f $(FASTQ_DIR)/$(SRR_ACCESSION)_1.fastq
-	gzip -f $(FASTQ_DIR)/$(SRR_ACCESSION)_2.fastq
-	mv $(FASTQ_DIR)/$(SRR_ACCESSION)_1.fastq.gz $(FASTQ_R1)
-	mv $(FASTQ_DIR)/$(SRR_ACCESSION)_2.fastq.gz $(FASTQ_R2)
-	rm -rf $(FASTQ_DIR)/$(SRR_ACCESSION)
+	echo ">> Downloading up to $$READS spots from $(SRR_ACCESSION) ..."; \
+	fastq-dump -X "$$READS" --split-files --gzip --outdir $(FASTQ_DIR) $(SRR_ACCESSION)
+	@if [ "$(SRR_ACCESSION)" != "$(SAMPLE_NAME)" ]; then \
+		mv $(FASTQ_DIR)/$(SRR_ACCESSION)_1.fastq.gz $(FASTQ_R1); \
+		mv $(FASTQ_DIR)/$(SRR_ACCESSION)_2.fastq.gz $(FASTQ_R2); \
+	fi
 
 # ==========================================================
 # ALIGN: index genome, align reads with bwa, sort + index BAM

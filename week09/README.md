@@ -1,6 +1,6 @@
 # Multi-Sample Variant Calling Pipeline
 
-A Makefile-driven variant-calling pipeline for **single-sample** and **multi-sample** sequencing analysis. The Makefile processes one sample per invocation: it downloads SRA reads to a target coverage, aligns them to a reference genome, checks sequencing depth, calls variants, and generates a per-sample VCF and summary statistics. For batch analysis, `scripts/run_parallel.sh` uses **GNU Parallel** to process a selected number of samples (`N`) from `design.csv` with a configurable number of concurrent jobs (`parallel`). The reference genome, annotation, and indexes are prepared once and shared by the sample jobs. Afterward, selected sample VCFs can be merged and annotated for coding-region effects.
+A Makefile-driven variant-calling pipeline for **single-sample** and **multi-sample** sequencing analysis. The Makefile processes one sample per invocation: it downloads up to 10,000 SRA spots per run by default, aligns them to a reference genome, checks sequencing depth, calls variants, and generates a per-sample VCF and summary statistics. For batch analysis, `scripts/run_parallel.sh` uses **GNU Parallel** to process a selected number of samples (`N`) from `design.csv` with a configurable number of concurrent jobs (`parallel`). The reference genome, annotation, and indexes are prepared once and shared by the sample jobs. Afterward, selected sample VCFs can be merged and annotated for coding-region effects.
 
 ## 1. BioProject Summary
 
@@ -23,7 +23,7 @@ conda env create --prefix ./.bioinfo-env --file environment.yml
 conda activate ./.bioinfo-env
 ```
 
-The environment should include Python, SRA Toolkit (`prefetch`, `fasterq-dump`), BWA, SAMtools, BCFtools, cURL, Entrez Direct (`esearch`, `efetch`), and **GNU Parallel**. Make sure `parallel` and `entrez-direct` are included in `environment.yml`.
+The environment should include Python, SRA Toolkit (`fastq-dump`), BWA, SAMtools, BCFtools, cURL, Entrez Direct (`esearch`, `efetch`), and **GNU Parallel**. Make sure `parallel` and `entrez-direct` are included in `environment.yml`.
 
 ## 3. Project Structure
 
@@ -65,10 +65,16 @@ The parser recognizes the required `Run` column and either `Sample` or `BioSampl
 Run one sample as a sanity check:
 
 ```bash
-make all SRR_ACCESSION=SRR31107661 SAMPLE_NAME=Sample01 COVERAGE=100
+make all SRR_ACCESSION=SRR31107661 SAMPLE_NAME=Sample01
 ```
 
 `make all` processes **one sample**, even if `design.csv` exists. `make single-all` is an equivalent single-sample entry point.
+
+Variant calling requires a mean depth of at least `MIN_MEAN_DEPTH=10`; if the depth check fails, increase `NUM_READS` and rerun. For optional coverage-based read-count estimation, explicitly set `NUM_READS=`:
+
+```bash
+make all SRR_ACCESSION=SRR31107661 SAMPLE_NAME=Sample01 NUM_READS= COVERAGE=100 READ_LEN=50
+```
 
 For each sample, the pipeline downloads sequencing reads, aligns them to the genome, generates a sorted/indexed BAM, checks aligned depth, performs haploid variant calling, and writes a VCF and statistics report.
 
@@ -83,7 +89,7 @@ This command:
 1. Reads `design.csv` and selects the first **10** valid sample rows.
 2. Prepares the shared reference genome, GFF annotation, and indexes **once**.
 3. Calls the existing single-sample Makefile workflow through GNU Parallel, with **up to four samples running concurrently**.
-4. Uses the batch target coverage (`BATCH_COVERAGE=100`, by default) and read length (`BATCH_READ_LEN`, defaulting to `READ_LEN=50`).
+4. Downloads up to 10,000 spots per run by default. `NUM_READS` changes this limit; `BATCH_COVERAGE` and `BATCH_READ_LEN` affect read-count estimation only when `NUM_READS=` is explicitly set.
 5. Generates per-sample FASTQ, BAM, VCF, coverage and statistics outputs, plus a GNU Parallel job log.
 
 To change the sample count or concurrency:
@@ -91,7 +97,7 @@ To change the sample count or concurrency:
 ```bash
 make design parallel=8 N=10       # 10 total samples; up to 8 at once
 make design parallel=4 N=all      # all rows in design.csv; up to 4 at once
-make design parallel=2 N=5 BATCH_COVERAGE=100
+make design parallel=2 N=5 NUM_READS=20000
 ```
 
 **Important:** `N` is the **total number of samples selected**, while `parallel` is the **maximum number of concurrently running sample jobs**. The batch command does **not** automatically merge or annotate variants.
@@ -152,9 +158,11 @@ Removes generated `genome/`, `fastq/`, `align/`, `variants/`, `reports/`, and `d
 | `DESIGN_CSV` | `design.csv` | Input run metadata file |
 | `SRR_ACCESSION` | `SRR31107661` | Run accession for single-sample execution |
 | `SAMPLE_NAME` | Same as `SRR_ACCESSION` | Output sample identifier |
-| `COVERAGE` | `10` | Single-sample target coverage; override as needed |
-| `BATCH_COVERAGE` | `100` | Target coverage for samples launched by `make design` |
-| `READ_LEN` | `50` | Assumed read length for estimating required read pairs |
+| `NUM_READS` | `10000` | Maximum SRA spot ID passed to `fastq-dump -X`; set empty to estimate from coverage |
+| `COVERAGE` | `10` | Target coverage for estimation only when `NUM_READS=` |
+| `BATCH_COVERAGE` | `100` | Target coverage for batch estimation only when `NUM_READS=` |
+| `READ_LEN` | `50` | Assumed read length for estimation only when `NUM_READS=` |
+| `BATCH_READ_LEN` | Same as `READ_LEN` | Read length used for batch estimation when `NUM_READS=` |
 | `N` | `all` | Total number of sample rows selected from the design |
 | `parallel` | `4` | Maximum number of concurrent GNU Parallel jobs |
 | `MIN_MEAN_DEPTH` | `10` | Minimum mean aligned depth required for variant calling |
@@ -167,7 +175,9 @@ Removes generated `genome/`, `fastq/`, `align/`, `variants/`, `reports/`, and `d
 |---|---|
 | `make help` | Show available commands (also the default for bare `make`) |
 | `make download-design BIOPROJECT=PRJNA1177455` | Download NCBI SRA metadata to `design.csv` |
-| `make all SRR_ACCESSION=... SAMPLE_NAME=...` | Process one sample |
+| `make fastq SRR_ACCESSION=...` | Download up to 10,000 spots as paired, compressed FASTQ files |
+| `make all SRR_ACCESSION=... SAMPLE_NAME=...` | Process one sample with the default 10,000-spot limit |
+| `make all SRR_ACCESSION=... NUM_READS=20000` | Process one sample with a 20,000-spot limit |
 | `make single-all SRR_ACCESSION=... SAMPLE_NAME=...` | Equivalent single-sample pipeline |
 | `make prepare-shared` | Download reference/annotation and prepare shared indexes |
 | `make design parallel=4 N=10` | Process the first ten samples, up to four simultaneously |

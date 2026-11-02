@@ -14,7 +14,7 @@ This project downloads a reference genome and paired-end sequencing reads, align
 | `READ_LEN` | `50` | Estimated bases per read |
 | `MIN_MEAN_DEPTH` | `10` | Minimum measured mean depth before variant calling |
 | `PLOIDY` | `1` | Haploid variant-calling model |
-| `NUM_READS` | Unset | Optional explicit read-pair count |
+| `NUM_READS` | `10000` | Maximum SRA spot ID extracted with `fastq-dump -X`; set empty to estimate from coverage |
 
 The workflow assumes paired-end reads and a haploid reference. Requested coverage is an estimate: read length, mapping rate, and available reads determine the measured depth.
 
@@ -28,14 +28,14 @@ make check-tools
 make all COVERAGE=30
 ```
 
-The environment supplies SRA Toolkit (`prefetch` and `fasterq-dump`), BWA, SAMtools, and BCFtools. The Makefile automatically adds `./.bioinfo-env/bin` to PATH, so activating the environment is optional.
+The environment supplies SRA Toolkit (`fastq-dump`), BWA, SAMtools, and BCFtools. The Makefile automatically adds `./.bioinfo-env/bin` to PATH, so activating the environment is optional.
 
-`COVERAGE=30` requests extra reads to provide a margin above the measured 10× threshold. It does not guarantee that the threshold will be met. Keep the same coverage setting on subsequent commands to avoid changing the cached read-count configuration.
+By default, the workflow runs `fastq-dump -X 10000 --split-files --gzip` on `SRR_ACCESSION`. To request more reads, use `make all NUM_READS=20000`. To estimate the count from coverage instead, use `make all NUM_READS= COVERAGE=30`. Actual mean aligned depth must still reach 10× before variant calling proceeds. Keep the same settings on subsequent commands.
 
 ## Workflow
 
 1. Download and decompress the NCBI reference, then calculate its total length.
-2. Estimate read pairs as `ceil(reference_length × COVERAGE / (2 × READ_LEN))`, or use `NUM_READS` if supplied. Extract paired FASTQ files and retain the first requested number of pairs.
+2. Extract the first 10,000 SRA spots with `fastq-dump -X 10000`, splitting paired mates and compressing the FASTQ files. If `NUM_READS=` is supplied, estimate the limit as `ceil(reference_length × COVERAGE / (2 × READ_LEN))`.
 3. Index the reference with BWA, align reads with `bwa mem`, and sort and index the BAM with SAMtools.
 4. Measure depth with `samtools depth -aa`. Stop before variant calling if the mean depth is below `MIN_MEAN_DEPTH`.
 5. Run `bcftools mpileup` and `bcftools call -mv --ploidy 1` to produce a compressed, variants-only VCF, then create its CSI index.
