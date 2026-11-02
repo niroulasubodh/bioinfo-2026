@@ -70,7 +70,7 @@ make all SRR_ACCESSION=SRR31107661 SAMPLE_NAME=Sample01
 
 `make all` processes **one sample**, even if `design.csv` exists. `make single-all` is an equivalent single-sample entry point.
 
-Variant calling requires a mean depth of at least `MIN_MEAN_DEPTH=10`; if the depth check fails, increase `NUM_READS` and rerun. For optional coverage-based read-count estimation, explicitly set `NUM_READS=`:
+In this pipeline, it requires a mean depth of at least `MIN_MEAN_DEPTH=10` for running variant calling; if the depth check fails, increase `NUM_READS` and rerun. For optional coverage-based read-count estimation, explicitly set `NUM_READS=`:
 
 ```bash
 make all SRR_ACCESSION=SRR31107661 SAMPLE_NAME=Sample01 NUM_READS= COVERAGE=100 READ_LEN=50
