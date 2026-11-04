@@ -26,8 +26,6 @@ conda activate ./.bioinfo-env
 
 The environment needs `sra-tools`, `bwa`, `samtools`, `macs3`, `deeptools`, `seqtk`, `parallel`, `curl`, `gzip`, and Python. `bedtools` is useful for replicate comparisons. 
 
-The download step uses `fastq-dump` from `sra-tools`; `prefetch` and `fasterq-dump` are not required.
-
 ## 3. Download and prepare the design file
 
 ```bash
