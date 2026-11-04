@@ -191,7 +191,7 @@ check-config:
 	esac
 
 check-tools: check-config
-	@for tool in curl gzip prefetch fasterq-dump bwa samtools macs3 bamCoverage; do \
+	@for tool in curl gzip fastq-dump bwa samtools macs3 bamCoverage; do \
 		command -v "$$tool" >/dev/null 2>&1 || { \
 			echo "ERROR: Missing $$tool" >&2; exit 1; \
 		}; \
@@ -292,7 +292,8 @@ $(CHR_GENOME).fai: $(CHR_GENOME)
 # ==========================================================
 # 10. DOWNLOAD ORIGINAL PAIRED-END FASTQ FILES
 # ==========================================================
-# The original FASTQs are downloaded once.
+# fastq-dump downloads up to MAX_READ_PAIRS spots (default: 10000).
+# Use MAX_READ_PAIRS=all to omit the download limit.
 # Subsampling occurs in a separate step.
 # No original reads are deleted by seqtk.
 
@@ -301,27 +302,22 @@ fastq: $(FASTQ_R1) $(FASTQ_R2)
 $(FASTQ_R1):
 	@mkdir -p "$(FASTQ_DIR)"
 
-	prefetch "$(SRR_ACCESSION)" -O "$(FASTQ_DIR)"
-
-	fasterq-dump \
+	fastq-dump \
+		$(if $(filter all,$(MAX_READ_PAIRS)),,-X "$(MAX_READ_PAIRS)") \
 		--split-files \
-		-e "$(THREADS)" \
+		--gzip \
 		-O "$(FASTQ_DIR)" \
-		"$(FASTQ_DIR)/$(SRR_ACCESSION)/$(SRR_ACCESSION).sra"
+		"$(SRR_ACCESSION)"
 
-	@test -s "$(FASTQ_DIR)/$(SRR_ACCESSION)_1.fastq" && \
-	test -s "$(FASTQ_DIR)/$(SRR_ACCESSION)_2.fastq" || { \
+	@test -s "$(FASTQ_DIR)/$(SRR_ACCESSION)_1.fastq.gz" && \
+	test -s "$(FASTQ_DIR)/$(SRR_ACCESSION)_2.fastq.gz" || { \
 		echo "ERROR: Missing paired FASTQs" >&2; exit 1; \
 	}
 
-	gzip -f \
-		"$(FASTQ_DIR)/$(SRR_ACCESSION)_1.fastq" \
-		"$(FASTQ_DIR)/$(SRR_ACCESSION)_2.fastq"
-
-	mv "$(FASTQ_DIR)/$(SRR_ACCESSION)_1.fastq.gz" "$(FASTQ_R1)"
-	mv "$(FASTQ_DIR)/$(SRR_ACCESSION)_2.fastq.gz" "$(FASTQ_R2)"
-
-	rm -rf "$(FASTQ_DIR)/$(SRR_ACCESSION)"
+	@if [ "$(SRR_ACCESSION)" != "$(SAMPLE_NAME)" ]; then \
+		mv "$(FASTQ_DIR)/$(SRR_ACCESSION)_1.fastq.gz" "$(FASTQ_R1)"; \
+		mv "$(FASTQ_DIR)/$(SRR_ACCESSION)_2.fastq.gz" "$(FASTQ_R2)"; \
+	fi
 
 # Ensure the second mate was created by the first recipe.
 $(FASTQ_R2): $(FASTQ_R1)
