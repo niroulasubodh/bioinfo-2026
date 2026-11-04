@@ -26,6 +26,8 @@ conda activate ./.bioinfo-env
 
 The environment needs `sra-tools`, `bwa`, `samtools`, `macs3`, `deeptools`, `seqtk`, `parallel`, `curl`, `gzip`, and Python. `bedtools` is useful for replicate comparisons. 
 
+The download step uses `fastq-dump` from `sra-tools`; `prefetch` and `fasterq-dump` are not required.
+
 ## 3. Download and prepare the design file
 
 ```bash
@@ -38,8 +40,8 @@ The resulting `design.csv` must contain `Run` and `Sample` (or `BioSample`) colu
 
 1. Download the GRCm39 reference genome once.
 2. Extract the selected chromosome and create its BWA and FASTA indexes.
-3. Download full paired-end SRA FASTQ reads.
-4. Optionally subsample read pairs using `seqtk` and a fixed random seed.
+3. Download paired-end SRA FASTQs using `fastq-dump -X 10000` by default, with `--split-files --gzip` to produce compressed mate files. The `-X` limit follows `MAX_READ_PAIRS`; `all` omits the limit.
+4. For numeric limits, run the existing `seqtk` subsampling step with a fixed random seed on the downloaded reads.
 5. Align reads to the chromosome-specific reference using BWA-MEM.
 6. Filter and index BAM alignments using samtools.
 7. Call accessible chromatin peaks using MACS3 (`BAMPE`; default q-value 0.01).
@@ -77,7 +79,9 @@ make design parallel=2 N=4 CHROMOSOME=chr2 MAX_READ_PAIRS=10000
 make design parallel=1 N=4 CHROMOSOME=chr1 MAX_READ_PAIRS=all
 ```
 
-`parallel` is the maximum number of simultaneous sample jobs; `N` is the number selected from `design.csv`; `CHROMOSOME` identifies the target chromosome; and `MAX_READ_PAIRS` limits the pairs *used for alignment*, not the size of the SRA download. A fixed `SUBSAMPLE_SEED` (default 42) makes read selection reproducible when mates are synchronized.
+`parallel` is the maximum number of simultaneous sample jobs; `N` is the number selected from `design.csv`; and `CHROMOSOME` identifies the target chromosome. `MAX_READ_PAIRS` (default 10000) sets the maximum SRA spot ID downloaded through `fastq-dump -X` and caps the read pairs used for alignment. For paired-end runs, the default selects the first 10,000 spots, rather than a random sample across the full run. The subsequent `seqtk` step uses `SUBSAMPLE_SEED` (default 42); when all downloaded pairs fit within the limit, it retains them all.
+
+Existing FASTQs are reused. Before increasing `MAX_READ_PAIRS` or switching to `all`, remove the affected sample's cached FASTQs and subset files so Make downloads enough reads. Use `make clean` for a complete restart; it also removes all generated reference and analysis outputs.
 
 ## 6. Results and output files
 
@@ -126,6 +130,7 @@ Load the matching chromosome reference, each sample's `.bw` coverage track, and 
 
 - The pipeline aligns reads directly to one chromosome; reads from other chromosomes may map incorrectly. Whole-genome alignment followed by chromosome extraction is more reliable.
 - Subsampling reduces computation but can substantially reduce peak-calling sensitivity and apparent replicate agreement; low-depth runs are exploratory.
+- The download limit selects the beginning of an SRA run, which may not represent the full dataset.
 - The MACS3 effective genome size is approximated for chromosome-restricted analysis, affecting significance estimates.
 - CPM normalization of chromosome-only BAMs is not directly equivalent to whole-genome library-size normalization.
 - The pipeline assumes paired-end ATAC-seq, not ChIP-seq with matched input controls.
