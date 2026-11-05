@@ -38,7 +38,7 @@ The resulting `design.csv` must contain `Run` and `Sample` (or `BioSample`) colu
 
 1. Download the GRCm39 reference genome once.
 2. Extract the selected chromosome and create its BWA and FASTA indexes.
-3. Download paired-end SRA FASTQs using `fastq-dump`, with `--split-files --gzip` to produce compressed mate files. The `-X` limit follows `MAX_READ_PAIRS`; `all` omits the limit.
+3. Download paired-end SRA FASTQs using `fastq-dump`, with `--split-files --gzip` to produce compressed mate files. 
 4. For numeric limits, run the existing `seqtk` subsampling step with a fixed random seed on the downloaded reads.
 5. Align reads to the chromosome-specific reference using BWA-MEM.
 6. Filter and index BAM alignments using samtools.
