@@ -50,25 +50,25 @@ The resulting `design.csv` must contain `Run` and `Sample` (or `BioSample`) colu
 **One sample:**
 
 ```bash
-make all SRR_ACCESSION=SRR23500889 CHROMOSOME=chr1 MAX_READ_PAIRS=10000
+make all SRR_ACCESSION=SRR23500889 CHROMOSOME=chr1 MAX_READ_PAIRS=1000000
 ```
 
 **Four samples sequentially:**
 
 ```bash
-make design parallel=1 N=4 CHROMOSOME=chr1 MAX_READ_PAIRS=10000
+make design parallel=1 N=4 CHROMOSOME=chr1 MAX_READ_PAIRS=1000000
 ```
 
 **Four samples, two concurrently:**
 
 ```bash
-make design parallel=2 N=4 CHROMOSOME=chr1 MAX_READ_PAIRS=10000
+make design parallel=2 N=4 CHROMOSOME=chr1 MAX_READ_PAIRS=1000000
 ```
 
 **Choose a different chromosome:**
 
 ```bash
-make design parallel=2 N=4 CHROMOSOME=chr2 MAX_READ_PAIRS=10000
+make design parallel=2 N=4 CHROMOSOME=chr2 MAX_READ_PAIRS=1000000
 ```
 
 **Use all read pairs instead of a subset:**
@@ -77,61 +77,52 @@ make design parallel=2 N=4 CHROMOSOME=chr2 MAX_READ_PAIRS=10000
 make design parallel=1 N=4 CHROMOSOME=chr1 MAX_READ_PAIRS=all
 ```
 
-`parallel` is the maximum number of simultaneous sample jobs; `N` is the number selected from `design.csv`; and `CHROMOSOME` identifies the target chromosome. `MAX_READ_PAIRS` (default 10000) sets the maximum SRA spot ID downloaded through `fastq-dump -X` and caps the read pairs used for alignment. For paired-end runs, the default selects the first 10,000 spots, rather than a random sample across the full run. The subsequent `seqtk` step uses `SUBSAMPLE_SEED` (default 42); when all downloaded pairs fit within the limit, it retains them all.
+`parallel` is the maximum number of simultaneous sample jobs; `N` is the number selected from `design.csv`; and `CHROMOSOME` identifies the target chromosome. `MAX_READ_PAIRS` (default 1,000,000) sets the maximum SRA spot ID downloaded through `fastq-dump -X` and caps the read pairs used for alignment. For paired-end runs, the default selects the first 1,000,000 spots, rather than a random sample across the full run. The subsequent `seqtk` step uses `SUBSAMPLE_SEED` (default 42); when all downloaded pairs fit within the limit, it retains them all.
 
 Existing FASTQs are reused. Before increasing `MAX_READ_PAIRS` or switching to `all`, remove the affected sample's cached FASTQs and subset files so Make downloads enough reads. Use `make clean` for a complete restart; it also removes all generated reference and analysis outputs.
 
 ## 6. Results and output files
 
-For chromosome 1 with 10,000 read pairs and seed 42, outputs are stored under chromosome- and read-limit-specific paths:
+For chromosome 1 with 1,000,000 read pairs and seed 42, outputs are stored under chromosome- and read-limit-specific paths:
 
 ```text
-align/chr1/reads10000_seed42/<SAMPLE>.bam
-peaks/chr1/reads10000_seed42/<SAMPLE>_peaks.narrowPeak
-tracks/chr1/reads10000_seed42/<SAMPLE>.bw
-reports/chr1/reads10000_seed42/<SAMPLE>_peak_stats.tsv
+align/chr1/reads1000000_seed42/<SAMPLE>.bam
+peaks/chr1/reads1000000_seed42/<SAMPLE>_peaks.narrowPeak
+tracks/chr1/reads1000000_seed42/<SAMPLE>.bw
+reports/chr1/reads1000000_seed42/<SAMPLE>_peak_stats.tsv
 ```
 
 The `.narrowPeak` file contains MACS3 peak calls; the `.bw` file contains a normalized coverage track for IGV.
 
 ### Peak counts
 
-Fill this table using the generated `*_peak_stats.tsv` reports. The values below are placeholders, **not measured results**.
+**not measured results**.
 
 | Sample | Condition | Number of peaks |
 |---|---|---|
-| Infected replicate 1 (SRR23500889) | Influenza A | 1 |
-| Infected replicate 2 (SRR23500890) | Influenza A | 1 |
-| Control replicate 1 (SRR23500891) | Control | 2 |
-| Control replicate 2 (SRR23500892) | Control | 2 |
+| Infected replicate 1 (SRS16789320) | Influenza A | 920 |
+| Infected replicate 2 (SRS16789319) | Influenza A | 890 |
+| Control replicate 1 (SRS16789318) | Control | 975 |
+| Control replicate 2 (SRS16789317) | Control | 876 |
 
-## 7. Assess replicate consistency
 
-Compare peak calls from replicate pairs within each condition. For example:
-
-```bash
-bedtools intersect \
-  -a peaks/chr1/reads10000_seed42/SRR23500889_peaks.narrowPeak \
-  -b peaks/chr1/reads10000_seed42/SRR23500890_peaks.narrowPeak \
-  -u | wc -l
-```
-
-## 8. Visualize peaks in IGV
+## 7. Visualize peaks in IGV
 
 Load the matching chromosome reference, each sample's `.bw` coverage track, and `.narrowPeak` peak calls into IGV. 
 
-![](IGV/peak.png)
+![](IGV/atac_peak.png)
 
-**Interesting Observation:** The genomic location (NC_000067.7:24652473-24652644) contains peak in control but not in influenza A infected sample.
+![](IGV/atac_peak_1.png)
 
-## 9. Limitations
 
-- The pipeline aligns reads directly to one chromosome; reads from other chromosomes may map incorrectly. Whole-genome alignment followed by chromosome extraction is more reliable.
-- Subsampling reduces computation but can substantially reduce peak-calling sensitivity and apparent replicate agreement; low-depth runs are exploratory.
-- The download limit selects the beginning of an SRA run, which may not represent the full dataset.
+**Interesting Observation:** The genomic location (NC_000067.7:24,139,082-24,139,591) contains peak in control but not in influenza A infected sample.
+
+## 10. Limitations
+
+- The pipeline aligns reads directly to one chromosome. Reads from other chromosomes may map incorrectly. Whole-genome alignment followed by chromosome extraction is more reliable.
+- Subsampling reduces computation but can substantially reduce peak-calling sensitivity and apparent replicate agreement.
 - The MACS3 effective genome size is approximated for chromosome-restricted analysis, affecting significance estimates.
 - CPM normalization of chromosome-only BAMs is not directly equivalent to whole-genome library-size normalization.
-- The pipeline assumes paired-end ATAC-seq, not ChIP-seq with matched input controls.
 
 ## 10. Cleanup
 

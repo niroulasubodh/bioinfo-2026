@@ -16,11 +16,11 @@
 #
 # Single sample:
 #   make all SRR_ACCESSION=SRR23500889 \
-#       CHROMOSOME=chr1 MAX_READ_PAIRS=10000
+#       CHROMOSOME=chr1 MAX_READ_PAIRS=1000000
 #
 # Multiple samples:
 #   make design parallel=1 N=4 \
-#       CHROMOSOME=chr1 MAX_READ_PAIRS=10000
+#       CHROMOSOME=chr1 MAX_READ_PAIRS=1000000
 #
 # Use MAX_READ_PAIRS=all for full-depth analysis.
 #
@@ -81,7 +81,7 @@ THREADS ?= 2
 
 # Maximum number of paired-end read PAIRS per sample.
 # Use all to disable subsampling.
-MAX_READ_PAIRS ?= 10000
+MAX_READ_PAIRS ?= 1000000
 
 # Fixed random seed makes subsampling reproducible.
 SUBSAMPLE_SEED ?= 42
@@ -165,7 +165,7 @@ help:
 	@echo "  make all SRR_ACCESSION=SRR23500889 CHROMOSOME=chr1 MAX_READ_PAIRS=10000"
 	@echo ""
 	@echo "Multiple samples:"
-	@echo "  make design parallel=1 N=4 CHROMOSOME=chr1 MAX_READ_PAIRS=10000"
+	@echo "  make design parallel=1 N=4 CHROMOSOME=chr1 MAX_READ_PAIRS=1000000"
 	@echo ""
 	@echo "Use all reads:"
 	@echo "  make all MAX_READ_PAIRS=all"
@@ -292,7 +292,7 @@ $(CHR_GENOME).fai: $(CHR_GENOME)
 # ==========================================================
 # 10. DOWNLOAD ORIGINAL PAIRED-END FASTQ FILES
 # ==========================================================
-# fastq-dump downloads up to MAX_READ_PAIRS spots (default: 10000).
+# fastq-dump downloads up to MAX_READ_PAIRS spots (default: 1000000).
 # Use MAX_READ_PAIRS=all to omit the download limit.
 # Subsampling occurs in a separate step.
 # No original reads are deleted by seqtk.
