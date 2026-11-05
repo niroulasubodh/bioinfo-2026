@@ -114,7 +114,7 @@ Load the matching chromosome reference, each sample's `.bw` coverage track, and 
 ![](IGV/atac_peak_1.png)
 
 
-**Interesting Observation:** The genomic location (NC_000067.7:24,139,082-24,139,591) contains peak in control but not in influenza A infected sample.
+**Interesting Observation:** The genomic region (NC_000067.7:24,139,082–24,139,591) contains a peak in both control samples but not in the influenza A-infected samples. This suggests that influenza A infection may alter chromatin accessibility or histone modification patterns at this region. My hypothesis is that infection induces changes in chromatin structure or histone modifications, potentially affecting the expression of nearby genes.
 
 ## 10. Limitations
 
