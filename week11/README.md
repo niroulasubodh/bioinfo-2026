@@ -38,18 +38,20 @@ make igv
 
 * **Find a gene that is very strongly expressed in all samples. What is its coverage?**
 
-  RPL3 (ribosomal protein L3) is a protein-coding gene with strong expression in all samples. Its coverage is shown below; a numerical coverage value has not been recorded.
+  RPL3 (ribosomal protein L3) is a protein-coding gene with strong expression in all samples. Its coverage is shown below.
 
   ![Figure 3: RNA-seq coverage at RPL3 across all samples.](IGV/fig3.png)
 
 * **Can you identify the transcripts that are expressed? Sometimes you can only exclude some candidates.**
 
-  The figure below shows three annotated transcripts of RBX1. Coverage alone does not establish which individual transcripts are expressed.
+  The figure below shows three annotated transcripts of RBX1. 
+  
+![Figure 4: Three annotated RBX1 transcripts and coverage in HBR and UHR samples.](IGV/fig4.png)
 
 * **Can you find a gene or transcript whose expression clearly differs between the two sample types? What is the fold change?**
 
-  RBX1 appears to have higher RNA-seq coverage in all three UHR replicates than in HBR, suggesting higher expression in UHR. Statistical analysis is needed to assess the significance of this difference.
+  PRAME has higher RNA-seq coverage in all three UHR replicates than in HBR, suggesting higher expression in UHR. Statistical analysis is needed to assess the significance of this difference.
 
-  The HBR-to-UHR fold change is calculated as `average_expression_HBR / average_expression_UHR`. A value below 1 indicates higher expression in UHR. A numerical fold change has not been calculated here.
+  The HBR-to-UHR fold change is calculated as `average_expression_HBR / average_expression_UHR`.The fold change is high as they is no or little expresion in HBR and hih in UHR. 
 
-  ![Figure 4: Three annotated RBX1 transcripts and coverage in HBR and UHR samples.](IGV/fig4.png)
+ ![Figure 5: Different Expression](IGV/fig5.png)
