@@ -52,6 +52,6 @@ make igv
 
   PRAME has higher RNA-seq coverage in all three UHR replicates than in HBR, suggesting higher expression in UHR. Statistical analysis is needed to assess the significance of this difference.
 
-  The HBR-to-UHR fold change is calculated as `average_expression_HBR / average_expression_UHR`. The fold change should be large because expression is low or absent in HBR but high in UHR.
+  The UHR-to-HBR fold change is calculated as `average_expression_UHR / average_expression_HBR`. The fold change should be large because expression is low or absent in HBR but high in UHR.
 
  ![Figure 5: Different Expression](IGV/fig5.png)
