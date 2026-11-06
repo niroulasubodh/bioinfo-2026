@@ -12,7 +12,7 @@ make batch
 
 ## Visualize the results in IGV
 
-Open IGV and enable its port listener on port 60151, then load the reference genome, gene annotations, and sample coverage tracks:
+Open IGV and run the command:
 
 ```bash
 make igv
