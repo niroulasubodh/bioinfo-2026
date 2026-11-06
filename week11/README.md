@@ -22,7 +22,7 @@ make igv
 
 * **Look at a wide region (millions of bases wide). How are the two sample types different?**
 
-  The two sample types show different expression patterns in some regions of the chromosome. The highlighted region below shows high coverage in HBR and little or no coverage in UHR, suggesting higher expression in HBR.
+  The two sample types show different expression patterns in some regions of the chromosome. The highlighted region below shows high coverage in HBR and no coverage in UHR, suggesting higher expression in HBR.
 
   ![Figure 1: Region with higher RNA-seq coverage in HBR than UHR.](IGV/fig1.png)
 
