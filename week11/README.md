@@ -1,4 +1,4 @@
-# RNA-seq Analysis with a Makefile
+# Evaluate gene expression¶
 
 This project uses a `Makefile` adapted from the Biostar Handbook by Dr. Albert Istvan to analyze RNA-seq data and compare HBR and UHR samples.
 
